@@ -67,20 +67,22 @@ int main(void) {
         int shared_card1, shared_card2, user_card, computer_card;
         card_shuffle(&shared_card1, &shared_card2, &user_card, &computer_card);
 
+        print_card_info(shared_card1, shared_card2, -1, computer_card);
+
         int user_betting_chips = 1, com_betting_chips = 1;
         int ret;
         if (user_chips != 1 && com_chips != 1) {
             int turn;
             for (turn = 1;; turn++) { // Betting
-                printf("┌────────────────────────┐ \n");
-                printf("│        Betting         │ \n");
-                printf("└────────────────────────┘ \n");
+                printf("┏━━━━━━━━━━━━━━━━━━━━━━━━┓ \n");
+                printf("┃        Betting         ┃ \n");
+                printf("┗━━━━━━━━━━━━━━━━━━━━━━━━┛ \n");
                 printf("\n");
 
 
-                printf("┌────────────────────────┐ \n");
-                printf("│ User: %2d   │ Com: %2d   │ \n", user_betting_chips, com_betting_chips);
-                printf("└────────────────────────┘ \n");
+                printf("┏━━━━━━━━━━━━┳━━━━━━━━━━┓ \n");
+                printf("┃ User: %2d   ┃ Com: %2d  ┃ \n", user_betting_chips, com_betting_chips);
+                printf("┗━━━━━━━━━━━━┻━━━━━━━━━━┛ \n");
                 printf("\n");
 
                 if ((turn + prev_winner) % 2 == COMPUTER) // User's turn
@@ -90,7 +92,8 @@ int main(void) {
                 if (ret == CALL || ret == FOLD) break;
             }
 
-            printf("Betting Finished !! \n");
+            printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n");
+            printf("Betting Finished \n");
             print_card_info(shared_card1, shared_card2, user_card, computer_card);
 
             if (ret == FOLD) {
@@ -117,35 +120,35 @@ int main(void) {
 
 /*
  * Tokens
- * ─
- * │
- * ┌
- * ┐
- * ┘
- * └
- * Line Maps
- * ┌─────┐
- * └─────┘
+ * ━
+ * ┃
+ * ┗
+ * ┛
+ * ┏
+ * ┓
+ * ╋
+ * ┳
+ * ┫
+ * ┻
+ * ┣
  */
 
 // Start implementing the functions
 void print_game_status(int round, int user_chips, int com_chips) {
-    printf("================================================================ \n");
-    printf("┌─────────────────────┐ \n");
-    printf("│   %d Game Starts!    │ \n", round);
-    printf("└─────────────────────┘ \n");
+    printf("┏━━━━━━━━━━━━━━━━━━━━━┓ \n");
+    printf("┃   %d Game Starts!    ┃ \n", round);
+    printf("┗━━━━━━━━━━━━━━━━━━━━━┛ \n");
     printf("\n");
-    printf("================================================================ \n");
 
     show_chips(user_chips, com_chips);
 }
 
 void show_chips(int user_chips, int com_chips) {
     printf("Chips remaining: \n");
-    printf("┌─────────────────────┐ \n");
-    printf("│   User       │  %2d  │ \n", user_chips);
-    printf("│   Computer   │  %2d  │ \n", com_chips);
-    printf("└─────────────────────┘ \n");
+    printf("┏━━━━━━━━━━━━━━┳━━━━━━┓ \n");
+    printf("┃   User       ┃  %2d  ┃ \n", user_chips);
+    printf("┃   Computer   ┃  %2d  ┃ \n", com_chips);
+    printf("┗━━━━━━━━━━━━━━┻━━━━━━┛ \n");
     printf("\n");
 }
 
@@ -164,7 +167,10 @@ void print_card_info(int shared_card1, int shared_card2, int user_card, int comp
     printf("┃ ┏━━━━━━━━━┓ ┃ ┏━━━━━━━━━┓ ┃ ┏━━━━━━━━━┓ ┃ ┏━━━━━━━━━┓ ┃ \n");
     printf("┃ ┃ ♠       ┃ ┃ ┃ ♠       ┃ ┃ ┃ ♠       ┃ ┃ ┃ ♠       ┃ ┃ \n");
     printf("┃ ┃         ┃ ┃ ┃         ┃ ┃ ┃         ┃ ┃ ┃         ┃ ┃ \n");
-    printf("┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ \n", computer_card, shared_card1, shared_card2, user_card);
+    if (user_card != -1)
+        printf("┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ \n", computer_card, shared_card1, shared_card2, user_card);
+    else
+        printf("┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ ┃    ?    ┃ ┃ \n", computer_card, shared_card1, shared_card2);
     printf("┃ ┃         ┃ ┃ ┃         ┃ ┃ ┃         ┃ ┃ ┃         ┃ ┃ \n");
     printf("┃ ┃       ♠ ┃ ┃ ┃       ♠ ┃ ┃ ┃       ♠ ┃ ┃ ┃       ♠ ┃ ┃ \n");
     printf("┃ ┗━━━━━━━━━┛ ┃ ┗━━━━━━━━━┛ ┃ ┗━━━━━━━━━┛ ┃ ┗━━━━━━━━━┛ ┃ \n");
