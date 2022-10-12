@@ -2,6 +2,9 @@
 #include <time.h>
 #include <stdlib.h>
 
+#define USER 1
+#define COMPUTER 2
+
 #define CALL 1 // 같은 개수 배팅 후 끝냄
 #define RAISE 2 // 받고 더 가
 #define FOLD 3 // ㅌㅌㅌㅌ
@@ -117,7 +120,7 @@ int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int tur
     int input;
     printf("User Input? ");
     scanf("%d", input);
-    while (!is_valid_num(1, 3, input)) {
+    while (!is_valid_bet(turn, input)) {
         printf("Invalid Input \n");
         printf("User Input? ");
         scanf("%d", input);
@@ -162,5 +165,16 @@ int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int bett
     } else {
         if (prob < 50 && turn > 1) return com_do_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
         else return com_do_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, rand() % 5 + 1);
+    }
+}
+
+void calc_winner(int shared_card1, int shared_card2, int user_card, int computer_card) {
+    int user_hand = calc_hand(user_card, shared_card1, shared_card2);
+    int com_hand = calc_hand(computer_card, shared_card1, shared_card2);
+    if (user_hand > com_hand) return USER;
+    else if (user_hand < com_hand) return COMPUTER;
+    else {
+        if (user_card < computer_card) return COMPUTER;
+        else return USER;
     }
 }
