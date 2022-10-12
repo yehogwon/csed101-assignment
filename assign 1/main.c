@@ -250,6 +250,7 @@ int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int bett
         else ret = com_do_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, rand() % 5 + 1);
     }
     
+    // TODO: Update the output format of computer's action
     if (ret == CALL) printf("COM : CALL \n");
     else if (ret == FOLD) printf("COM : FOLD \n");
     else printf("COM : RAISE %d \n", ret);
