@@ -44,7 +44,7 @@ int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int tur
 // 3.3 컴퓨터의 베팅
 int calc_hand(int card, int shard_card1, int shard_card2); // return the hand comparing to the shared cards
 int com_do_call(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn);
-int com_do_raise(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn);
+int com_do_raise(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn, int count);
 int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn); // make computer's choice of betting up and return it
 
 // 4.4 게임 진행 여부 입력 및 처리
@@ -138,20 +138,29 @@ int calc_hand(int card, int shard_card1, int shard_card2) {
 }
 
 int com_do_call(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn) {
-
+    if (betted_chips > com_chips) *com_betting_chips = com_chips;
+    else *com_betting_chips = betted_chips;
+    return 0;
 }
 
-int com_do_raise(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn) {
-
+int com_do_raise(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn, int count) {
+    if (count > com_chips) return com_do_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
+    else {
+        *com_betting_chips = count;
+        return count;
+    }
 }
 
 int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn) {
     int prob = rand() % 100;
     if (user_hand == DOUBLE || user_hand == STRAIGHT || user_hand == TRIPLE) {
-        if (prob < 70); // Do Fold
-        else; // Do Call
+        if (prob < 70) return -1;
+        else {
+            if (turn != 1) return com_do_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
+            else return com_do_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, 1);
+        }
     } else {
-        if (prob < 50 && turn > 1); // Do Call
-        else; // Do Raise, and set randomly within [0, 5]
+        if (prob < 50 && turn > 1) return com_do_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
+        else return com_do_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, rand() % 5 + 1);
     }
 }
