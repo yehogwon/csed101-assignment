@@ -32,6 +32,7 @@ int find_min(int a, int b, int c) {
 
 // 2.1 게임 상태 출력
 void print_game_status(int round, int user_chips, int com_chips); // print the number of chips each player has
+void show_chips(int user_chips, int com_chips);
 
 // 2.2 카드 생성 및 출력
 void card_shuffle(int *shared_card1, int *shared_card2, int *user_card, int *computer_card); // generate 4 random cards
@@ -51,10 +52,12 @@ int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int bett
 // 4.4 게임 진행 여부 입력 및 처리
 int calc_winner(int shared_card1, int shared_card2, int user_card, int computer_card); // return the winner given the cards assuming that the betting turn have ended
 
+void update(int winner, int *user_chips, int *com_chips, int user_betting_chips, int com_betting_chips);
+
 int main(void) {
     srand(time(NULL));
 
-    int prev_winner = COMPUTER;
+    int prev_winner = USER;
     int user_chips = 50, com_chips = 50;
     for (int round = 1; round <= 10; round++) {
         print_game_status(round, user_chips, com_chips);
@@ -63,35 +66,51 @@ int main(void) {
         card_shuffle(&shared_card1, &shared_card2, &user_card, &computer_card);
 
         int user_betting_chips = 1, com_betting_chips = 1;
-        int turn = 1 - prev_winner;
-        for (int turn = 1;; turn++) { // Betting
-            if (user_chips != 1 && com_chips != 1) {
+        int ret;
+        if (user_chips != 1 && com_chips != 1) {
+            int turn;
+            for (turn = 1;; turn++) { // Betting
                 printf("┌────────────────────────┐ \n");
-                printf("│        Betting         │ \n");
+                printf("│        Betting  %d       │ \n", turn);
                 printf("└────────────────────────┘ \n");
                 printf("\n");
 
 
                 printf("┌────────────────────────┐ \n");
-                printf("│ User: %2d   │ Com: %2d   │ \n", user_chips - user_betting_chips, com_chips - user_betting_chips);
+                printf("│ User: %2d   │ Com: %2d   │ \n", user_betting_chips, com_betting_chips);
                 printf("└────────────────────────┘ \n");
                 printf("\n");
 
-                int ret;
-                if (turn == COMPUTER) 
-                    ret = user_turn(user_chips, &user_betting_chips, user_betting_chips + com_betting_chips, turn);
-                else 
-                    ret = computer_turn(calc_hand(user_card, shared_card1, shared_card2), com_chips, &com_betting_chips, user_betting_chips + com_betting_chips, turn);
-                if (ret == CALL) break;
-                else if (ret == FOLD) {
-                    if (prev_winner == COMPUTER) {
-                        printf("You folded. You lose this round. \n");
-                    }
-                }
-                turn = 1 - turn;
+                if ((turn + prev_winner) % 2 == COMPUTER) // User's turn
+                    ret = user_turn(user_chips, &user_betting_chips, com_betting_chips, turn);
+                else // Computer's turn
+                    ret = computer_turn(calc_hand(user_card, shared_card1, shared_card2), com_chips, &com_betting_chips, user_betting_chips, turn);
+                if (ret == CALL || ret == FOLD) break;
+            }
+
+            printf("Betting Finished !! \n");
+            print_card_info(shared_card1, shared_card2, user_card, computer_card);
+
+            if (ret == FOLD) {
+                prev_winner = (turn + prev_winner) % 2 == COMPUTER ? USER : COMPUTER;
+                update(prev_winner, &user_chips, &com_chips, user_betting_chips, com_betting_chips);
             }
         }
+
+        int winner = calc_winner(shared_card1, shared_card2, user_card, computer_card);
+        update(winner, &user_chips, &com_chips, user_betting_chips, com_betting_chips);
+
+        if (user_chips == 0 || com_chips == 0) break;
+        int signal;
+        printf("Go [1] or Stop [-1] : ");
+        scanf("%d", &signal);
+        if (signal == -1) break;
     }
+
+    printf("================================================== \n");
+    printf("The game have ended !! \n");
+    show_chips(user_chips, com_chips);
+    printf("The winner is !!!!!!!!!!!!!!! %s !!!!!!!!! \n", user_chips >= com_chips ? "User" : "Computer");
 }
 
 /*
@@ -109,11 +128,17 @@ int main(void) {
 
 // Start implementing the functions
 void print_game_status(int round, int user_chips, int com_chips) {
+    printf("================================================================ \n");
     printf("┌─────────────────────┐ \n");
     printf("│   %d Game Starts!    │ \n", round);
     printf("└─────────────────────┘ \n");
     printf("\n");
+    printf("================================================================ \n");
 
+    show_chips(user_chips, com_chips);
+}
+
+void show_chips(int user_chips, int com_chips) {
     printf("Chips remaining: \n");
     printf("┌─────────────────────┐ \n");
     printf("│   User       │  %2d  │ \n", user_chips);
@@ -131,7 +156,7 @@ void card_shuffle(int *shared_card1, int *shared_card2, int *user_card, int *com
 
 // TODO: Draw detailed box ; Refer to the assn1.pdf
 void print_card_info(int shared_card1, int shared_card2, int user_card, int computer_card) {
-    printf("Computer: %2d || Shared: %2d, %2d || User: %2d \n", computer_card, shared_card1, shared_card2, user_card);
+    printf("Showing the card!! ::::: Computer: %2d || Shared: %2d, %2d || User: %2d \n", computer_card, shared_card1, shared_card2, user_card);
 }
 
 int is_valid_num(int a, int b, int num) {
@@ -152,13 +177,13 @@ int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int tur
         scanf("%d", &action);
     }
     
-    if (action == 2) {
+    if (action == 2) { // Raise
         int raise;
         printf("Raise? How Many? ");
         scanf("%d", &raise);
         *user_betting_chips = betted_chips + raise;
         return raise;
-    } else if (action == 1) {
+    } else if (action == 1) { // Call
         *user_betting_chips = betted_chips <= user_chips ? betted_chips : user_chips;
         return CALL;
     } else {
@@ -194,17 +219,22 @@ int com_do_raise(int user_hand, int com_chips, int *com_betting_chips, int bette
 }
 
 int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn) {
-    int prob = rand() % 100;
+    int prob = rand() % 100, ret;
     if (user_hand == DOUBLE || user_hand == STRAIGHT || user_hand == TRIPLE) {
-        if (prob < 70) return -1;
+        if (prob < 70) ret = -1;
         else {
-            if (turn != 1) return com_do_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
-            else return com_do_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, 1);
+            if (turn != 1) ret = com_do_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
+            else ret = com_do_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, 1);
         }
     } else {
-        if (prob < 50 && turn > 1) return com_do_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
-        else return com_do_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, rand() % 5 + 1);
+        if (prob < 50 && turn > 1) ret = com_do_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
+        else ret = com_do_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, rand() % 5 + 1);
     }
+    
+    if (ret == CALL) printf("COM : CALL \n");
+    else if (ret == FOLD) printf("COM : FOLD \n");
+    else printf("COM : RAISE %d \n", ret);
+    return ret;
 }
 
 int calc_winner(int shared_card1, int shared_card2, int user_card, int computer_card) {
@@ -216,4 +246,19 @@ int calc_winner(int shared_card1, int shared_card2, int user_card, int computer_
         if (user_card < computer_card) return COMPUTER;
         else return USER;
     }
+}
+
+void update(int winner, int *user_chips, int *com_chips, int user_betting_chips, int com_betting_chips) {
+    printf("Winner: %s \n", winner == USER ? "User" : "Computer");
+    printf("\n");
+
+    if (winner == USER) {
+        *user_chips += com_betting_chips;
+        *com_chips -= com_betting_chips;
+    } else if (winner == COMPUTER) {
+        *user_chips -= user_betting_chips;
+        *com_chips += user_betting_chips;
+    }
+
+    show_chips(*user_chips, *com_chips);
 }
