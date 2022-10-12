@@ -71,7 +71,7 @@ int main(void) {
             int turn;
             for (turn = 1;; turn++) { // Betting
                 printf("┌────────────────────────┐ \n");
-                printf("│        Betting  %d       │ \n", turn);
+                printf("│        Betting         │ \n");
                 printf("└────────────────────────┘ \n");
                 printf("\n");
 
@@ -154,9 +154,19 @@ void card_shuffle(int *shared_card1, int *shared_card2, int *user_card, int *com
     *computer_card = rand() % 40 + 1;
 }
 
-// TODO: Draw detailed box ; Refer to the assn1.pdf
 void print_card_info(int shared_card1, int shared_card2, int user_card, int computer_card) {
     printf("Showing the card!! ::::: Computer: %2d || Shared: %2d, %2d || User: %2d \n", computer_card, shared_card1, shared_card2, user_card);
+    printf("┏━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┓ \n");
+    printf("┃  Computer   ┃       Shared Cards        ┃     User    ┃ \n");
+    printf("┣━━━━━━━━━━━━━╋━━━━━━━━━━━━━┳━━━━━━━━━━━━━╋━━━━━━━━━━━━━┫ \n");
+    printf("┃ ┏━━━━━━━━━┓ ┃ ┏━━━━━━━━━┓ ┃ ┏━━━━━━━━━┓ ┃ ┏━━━━━━━━━┓ ┃ \n");
+    printf("┃ ┃ ♠       ┃ ┃ ┃ ♠       ┃ ┃ ┃ ♠       ┃ ┃ ┃ ♠       ┃ ┃ \n");
+    printf("┃ ┃         ┃ ┃ ┃         ┃ ┃ ┃         ┃ ┃ ┃         ┃ ┃ \n");
+    printf("┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ \n", computer_card, shared_card1, shared_card2, user_card);
+    printf("┃ ┃         ┃ ┃ ┃         ┃ ┃ ┃         ┃ ┃ ┃         ┃ ┃ \n");
+    printf("┃ ┃       ♠ ┃ ┃ ┃       ♠ ┃ ┃ ┃       ♠ ┃ ┃ ┃       ♠ ┃ ┃ \n");
+    printf("┃ ┗━━━━━━━━━┛ ┃ ┗━━━━━━━━━┛ ┃ ┗━━━━━━━━━┛ ┃ ┗━━━━━━━━━┛ ┃ \n");
+    printf("┗━━━━━━━━━━━━━┻━━━━━━━━━━━━━┻━━━━━━━━━━━━━┛━━━━━━━━━━━━━┛ \n");
 }
 
 int is_valid_num(int a, int b, int num) {
