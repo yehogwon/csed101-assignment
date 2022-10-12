@@ -117,13 +117,25 @@ int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int tur
     printf("└────────────────────────┘ \n");
     printf("\n");
 
-    int input;
+    int action;
     printf("User Input? ");
-    scanf("%d", input);
-    while (!is_valid_bet(turn, input)) {
+    scanf("%d", action);
+    while (!is_valid_bet(turn, action)) {
         printf("Invalid Input \n");
         printf("User Input? ");
-        scanf("%d", input);
+        scanf("%d", action);
+    }
+    
+    if (action == RAISE) {
+        int raise;
+        printf("Raise? How Many? ");
+        scanf("%d", raise);
+        return raise;
+    } else if (action == CALL) {
+        *user_betting_chips = betted_chips <= user_chips ? betted_chips : user_chips;
+        return 0;
+    } else {
+        return -1;
     }
 }
 
