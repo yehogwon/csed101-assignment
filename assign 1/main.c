@@ -15,7 +15,8 @@
 #define TRIPLE 4 // 다 똑같음
 
 void clear() {
-    printf("\033[H\033[J");
+    // printf("\033[H\033[J");
+    system("clear");
 }
 
 int find_max(int a, int b, int c) {
@@ -60,6 +61,7 @@ int main(void) {
     int prev_winner = USER;
     int user_chips = 50, com_chips = 50;
     for (int round = 1; round <= 10; round++) {
+        clear();
         print_game_status(round, user_chips, com_chips);
 
         int shared_card1, shared_card2, user_card, computer_card;
