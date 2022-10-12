@@ -60,7 +60,9 @@ int main(void) {
 
     int prev_winner = USER;
     int user_chips = 50, com_chips = 50;
-    for (int round = 1; round <= 10; round++) {
+    
+    int round;
+    for (round = 1; round <= 10; round++) {
         clear();
         print_game_status(round, user_chips, com_chips);
 
@@ -92,7 +94,7 @@ int main(void) {
                 if (ret == CALL || ret == FOLD) break;
             }
 
-            printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n");
+            printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n");
             printf("Betting Finished \n");
             print_card_info(shared_card1, shared_card2, user_card, computer_card);
 
@@ -107,15 +109,15 @@ int main(void) {
 
         if (user_chips == 0 || com_chips == 0) break;
         int signal;
-        printf("Go [1] or Stop [-1] : ");
+        printf("Proceed or Not? [Go: 1, End: -1]: ");
         scanf("%d", &signal);
         if (signal == -1) break;
     }
 
-    printf("================================================== \n");
-    printf("The game have ended !! \n");
+    printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n");
+    printf("Number of Games: %d \n", round);
     show_chips(user_chips, com_chips);
-    printf("The winner is !!!!!!!!!!!!!!! %s !!!!!!!!! \n", user_chips >= com_chips ? "User" : "Computer");
+    printf("%s win! \n", user_chips >= com_chips ? "User" : "Computer");
 }
 
 /*
@@ -153,14 +155,13 @@ void show_chips(int user_chips, int com_chips) {
 }
 
 void card_shuffle(int *shared_card1, int *shared_card2, int *user_card, int *computer_card) {
-    *shared_card1 = rand() % 40 + 1;
-    *shared_card2 = rand() % 40 + 1;
-    *user_card = rand() % 40 + 1;
-    *computer_card = rand() % 40 + 1;
+    *shared_card1 = rand() % 10 + 1;
+    *shared_card2 = rand() % 10 + 1;
+    *user_card = rand() % 10 + 1;
+    *computer_card = rand() % 10 + 1;
 }
 
 void print_card_info(int shared_card1, int shared_card2, int user_card, int computer_card) {
-    printf("Showing the card!! ::::: Computer: %2d || Shared: %2d, %2d || User: %2d \n", computer_card, shared_card1, shared_card2, user_card);
     printf("┏━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┓ \n");
     printf("┃  Computer   ┃       Shared Cards        ┃     User    ┃ \n");
     printf("┣━━━━━━━━━━━━━╋━━━━━━━━━━━━━┳━━━━━━━━━━━━━╋━━━━━━━━━━━━━┫ \n");
@@ -267,7 +268,9 @@ int calc_winner(int shared_card1, int shared_card2, int user_card, int computer_
 }
 
 void update(int winner, int *user_chips, int *com_chips, int user_betting_chips, int com_betting_chips) {
-    printf("Winner: %s \n", winner == USER ? "User" : "Computer");
+    printf("┏━━━━━━━━━━━━━━━━━━━━━┓ \n");
+    printf("┃ %8s win!       ┃ \n", winner == USER ? "User" : "Computer");
+    printf("┗━━━━━━━━━━━━━━━━━━━━━┛ \n");
     printf("\n");
 
     if (winner == USER) {
