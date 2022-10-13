@@ -86,6 +86,7 @@ int main(void) {
                 printf("┗━━━━━━━━━━━━┻━━━━━━━━━━┛ \n");
                 printf("\n");
 
+                // FIXME: Check if turning algorithm works well
                 if ((turn + prev_winner) % 2 != USER)
                     ret = user_turn(user_chips, &user_betting_chips, com_betting_chips, turn);
                 else
