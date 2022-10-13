@@ -1,5 +1,4 @@
 // TODO: update newlines
-// TODO: Update for user to input even if there are no chips left
 
 #include <stdio.h>
 #include <time.h>
@@ -89,7 +88,7 @@ int main(void) {
 
 
                 printf("┏━━━━━━━━━━━━┳━━━━━━━━━━┓ \n");
-                printf("┃ User: %2d   ┃ Com: %2d  ┃ \n", user_betting_chips, com_betting_chips);
+                printf("┃ User:%3d   ┃ Com:%3d  ┃ \n", user_betting_chips, com_betting_chips);
                 printf("┗━━━━━━━━━━━━┻━━━━━━━━━━┛ \n");
                 printf("\n");
 
@@ -115,11 +114,10 @@ int main(void) {
             update(winner, &user_chips, &com_chips, user_betting_chips, com_betting_chips);
         }
 
-        if (user_chips == 0 || com_chips == 0) break;
         int signal;
         printf("Proceed or Not? [Go: 1, End: -1]: ");
         scanf("%d", &signal);
-        if (signal == -1) break;
+        if (user_chips == 0 || com_chips == 0 || signal == -1) break;
     }
 
     printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n");
@@ -146,7 +144,7 @@ int main(void) {
 // Start implementing the functions
 void print_game_status(int round, int user_chips, int com_chips) {
     printf("┏━━━━━━━━━━━━━━━━━━━━━┓ \n");
-    printf("┃   %d Game Starts!    ┃ \n", round);
+    printf("┃   %2d Game Starts!   ┃ \n", round);
     printf("┗━━━━━━━━━━━━━━━━━━━━━┛ \n");
     printf("\n");
 
@@ -156,8 +154,8 @@ void print_game_status(int round, int user_chips, int com_chips) {
 void show_chips(int user_chips, int com_chips) {
     printf("Chips remaining: \n");
     printf("┏━━━━━━━━━━━━━━┳━━━━━━┓ \n");
-    printf("┃   User       ┃  %2d  ┃ \n", user_chips);
-    printf("┃   Computer   ┃  %2d  ┃ \n", com_chips);
+    printf("┃   User       ┃ %3d  ┃ \n", user_chips);
+    printf("┃   Computer   ┃ %3d  ┃ \n", com_chips);
     printf("┗━━━━━━━━━━━━━━┻━━━━━━┛ \n");
     printf("\n");
 }
@@ -177,9 +175,9 @@ void print_card_info(int shared_card1, int shared_card2, int user_card, int comp
     printf("┃ ┃ ♠       ┃ ┃ ┃ ♠       ┃ ┃ ┃ ♠       ┃ ┃ ┃ ♠       ┃ ┃ \n");
     printf("┃ ┃         ┃ ┃ ┃         ┃ ┃ ┃         ┃ ┃ ┃         ┃ ┃ \n");
     if (user_card != -1)
-        printf("┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ \n", computer_card, shared_card1, shared_card2, user_card);
+        printf("┃ ┃  %3d    ┃ ┃ ┃  %3d    ┃ ┃ ┃  %3d    ┃ ┃ ┃  %3d    ┃ ┃ \n", computer_card, shared_card1, shared_card2, user_card);
     else
-        printf("┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ ┃   %2d    ┃ ┃ ┃    ?    ┃ ┃ \n", computer_card, shared_card1, shared_card2);
+        printf("┃ ┃  %3d    ┃ ┃ ┃  %3d    ┃ ┃ ┃  %3d    ┃ ┃ ┃    ?    ┃ ┃ \n", computer_card, shared_card1, shared_card2);
     printf("┃ ┃         ┃ ┃ ┃         ┃ ┃ ┃         ┃ ┃ ┃         ┃ ┃ \n");
     printf("┃ ┃       ♠ ┃ ┃ ┃       ♠ ┃ ┃ ┃       ♠ ┃ ┃ ┃       ♠ ┃ ┃ \n");
     printf("┃ ┗━━━━━━━━━┛ ┃ ┗━━━━━━━━━┛ ┃ ┗━━━━━━━━━┛ ┃ ┗━━━━━━━━━┛ ┃ \n");
