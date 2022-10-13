@@ -1,9 +1,12 @@
 // TODO: update newlines
-// TODO: Fold makes lose the turn
+// TODO: Update for user to input even if there are no chips left
 
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+
+#define PLAIN "\033[0;37m"
+#define RED "\033[1;31m"
 
 #define USER 0
 #define COMPUTER 1
@@ -75,7 +78,7 @@ int main(void) {
         print_card_info(shared_card1, shared_card2, -1, computer_card);
 
         int user_betting_chips = 1, com_betting_chips = 1;
-        int ret;
+        int ret = -100;
         if (user_chips != 1 && com_chips != 1) {
             int turn;
             for (turn = 1;; turn++) { // Betting
@@ -102,13 +105,15 @@ int main(void) {
             print_card_info(shared_card1, shared_card2, user_card, computer_card);
 
             if (ret == FOLD) {
-                prev_winner = (turn + prev_winner) % 2 == COMPUTER ? USER : COMPUTER;
+                prev_winner = (turn + prev_winner) % 2;
                 update(prev_winner, &user_chips, &com_chips, user_betting_chips, com_betting_chips);
             }
         }
 
-        int winner = calc_winner(shared_card1, shared_card2, user_card, computer_card);
-        update(winner, &user_chips, &com_chips, user_betting_chips, com_betting_chips);
+        if (ret != FOLD) {
+            int winner = calc_winner(shared_card1, shared_card2, user_card, computer_card);
+            update(winner, &user_chips, &com_chips, user_betting_chips, com_betting_chips);
+        }
 
         if (user_chips == 0 || com_chips == 0) break;
         int signal;
