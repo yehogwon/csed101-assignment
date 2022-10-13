@@ -103,7 +103,6 @@ int main(void) {
             print_card_info(shared_card1, shared_card2, user_card, computer_card);
         }
 
-        // FIXME: Check if winner checking algorithm works well
         prev_winner = ret == FOLD ? 1 - (turn + prev_winner) % 2 : calc_winner(shared_card1, shared_card2, user_card, computer_card);
         update(prev_winner, &user_chips, &com_chips, user_betting_chips, com_betting_chips);
 
