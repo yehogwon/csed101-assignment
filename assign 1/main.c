@@ -1,5 +1,3 @@
-// TODO: update newlines
-
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -87,11 +85,9 @@ int main(void) {
 
                 switch ((turn + prev_winner) % 2) {
                     case USER: 
-                        printf(RED"User's Turn \n"PLAIN);
                         ret = user_turn(user_chips, &user_betting_chips, com_betting_chips, turn);
                         break;
                     case COMPUTER:
-                        printf(RED"Computer's Turn \n"PLAIN);
                         ret = computer_turn(calc_hand(computer_card, shared_card1, shared_card2), com_chips, &com_betting_chips, user_betting_chips, turn);
                         break;
                 }
@@ -158,6 +154,7 @@ void print_card_info(int shared_card1, int shared_card2, int user_card, int comp
     printf("┃ ┃       ♠ ┃ ┃ ┃       ♠ ┃ ┃ ┃       ♠ ┃ ┃ ┃       ♠ ┃ ┃ \n");
     printf("┃ ┗━━━━━━━━━┛ ┃ ┗━━━━━━━━━┛ ┃ ┗━━━━━━━━━┛ ┃ ┗━━━━━━━━━┛ ┃ \n");
     printf("┗━━━━━━━━━━━━━┻━━━━━━━━━━━━━┻━━━━━━━━━━━━━┛━━━━━━━━━━━━━┛ \n");
+    printf("\n");
 }
 
 int is_valid_num(int a, int b, int num) {
