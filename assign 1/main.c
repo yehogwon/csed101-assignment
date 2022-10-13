@@ -232,7 +232,6 @@ int com_do_raise(int user_hand, int com_chips, int *com_betting_chips, int bette
 }
 
 int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn) {
-    printf(RED"User Hand: %d \n"PLAIN, user_hand);
     int prob = rand() % 100, ret;
     if (user_hand > NOPAIR) {
         if (prob < 70) ret = -1;
