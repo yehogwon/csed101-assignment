@@ -1,3 +1,9 @@
+/**
+ * Author: 20220358 권예호 (Yeho Gwon)
+ * Date: 2022-10-31
+ * Environment: macOS 12.6, Visual Studio Code 1.72.1, gcc 14.0.0, C99
+*/
+
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -202,7 +208,7 @@ int calc_hand(int card, int shard_card1, int shard_card2) {
     int max = find_max(card, shard_card1, shard_card2), middle = find_middle(card, shard_card1, shard_card2), min = find_min(card, shard_card1, shard_card2);
     if (max == middle && middle == min) {
         return TRIPLE;
-    } else if (max == middle || middle == min) {
+    } else if (card == shard_card1 || card == shard_card2) {
         return DOUBLE;
     } else if (max - middle == 1 && middle - min == 1) {
         return STRAIGHT;
@@ -226,6 +232,7 @@ int com_do_raise(int user_hand, int com_chips, int *com_betting_chips, int bette
 }
 
 int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn) {
+    printf(RED"User Hand: %d \n"PLAIN, user_hand);
     int prob = rand() % 100, ret;
     if (user_hand > NOPAIR) {
         if (prob < 70) ret = -1;
