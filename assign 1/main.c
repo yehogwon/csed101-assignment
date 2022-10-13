@@ -71,9 +71,8 @@ int main(void) {
         print_card_info(shared_card1, shared_card2, -1, computer_card);
 
         int user_betting_chips = 1, com_betting_chips = 1;
-        int ret = -100;
+        int turn, ret = -100;
         if (user_chips != 1 && com_chips != 1) {
-            int turn;
             for (turn = 1;; turn++) {
                 printf("┏━━━━━━━━━━━━━━━━━━━━━━━━┓ \n");
                 printf("┃        Betting         ┃ \n");
@@ -97,17 +96,11 @@ int main(void) {
             printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n");
             printf("Betting Finished \n");
             print_card_info(shared_card1, shared_card2, user_card, computer_card);
-
-            if (ret == FOLD) {
-                prev_winner = (turn + prev_winner) % 2;
-                update(prev_winner, &user_chips, &com_chips, user_betting_chips, com_betting_chips);
-            }
         }
 
-        if (ret != FOLD) {
-            int winner = calc_winner(shared_card1, shared_card2, user_card, computer_card);
-            update(winner, &user_chips, &com_chips, user_betting_chips, com_betting_chips);
-        }
+        // FIXME: Check if winner checking algorithm works well
+        prev_winner = ret == FOLD ? 1 - (turn + prev_winner) % 2 : calc_winner(shared_card1, shared_card2, user_card, computer_card);
+        update(prev_winner, &user_chips, &com_chips, user_betting_chips, com_betting_chips);
 
         int signal;
         printf("Proceed or Not? [Go: 1, End: -1]: ");
