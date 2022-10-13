@@ -1,3 +1,6 @@
+// TODO: update newlines
+// TODO: Fold makes lose the turn
+
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -188,17 +191,16 @@ int is_valid_bet(int turn, int num) {
 
 int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int turn) {
     int action;
-    printf("User Input [ Call: 1, Raise: 2, Fold: 3 ] ? ");
-    scanf("%d", &action);
-    while (!is_valid_bet(turn, action)) {
-        printf("Invalid Input \n");
-        printf("User Input [ Call: 1, Raise: 2, Fold: 3 ] ? ");
+    while (1) {
+        printf("USER ┃ [Call: 1 | Raise: 2 | Fold: 3]: ");
         scanf("%d", &action);
+        if (is_valid_bet(turn, action)) break;
+        printf("USER ┃ [Invalid input] \n");
     }
     
     if (action == 2) { // Raise
         int raise;
-        printf("Raise? How Many? ");
+        printf("USER ┃ [Input number of chips for Raise]: ");
         scanf("%d", &raise);
         *user_betting_chips = betted_chips + raise;
         return raise;
@@ -250,10 +252,9 @@ int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int bett
         else ret = com_do_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, rand() % 5 + 1);
     }
     
-    // TODO: Update the output format of computer's action
-    if (ret == CALL) printf("COM : CALL \n");
-    else if (ret == FOLD) printf("COM : FOLD \n");
-    else printf("COM : RAISE %d \n", ret);
+    if (ret == CALL) printf("COM ┃ Call \n");
+    else if (ret == FOLD) printf("COM ┃ Fold \n");
+    else printf("COM ┃ Raise, +%d \n", ret);
     return ret;
 }
 
