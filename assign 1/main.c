@@ -57,7 +57,7 @@ void update(int winner, int *user_chips, int *com_chips, int user_betting_chips,
 int main(void) {
     srand(time(NULL));
 
-    int prev_winner = USER;
+    int prev_winner = COMPUTER;
     int user_chips = 50, com_chips = 50;
     
     int round;
@@ -85,11 +85,16 @@ int main(void) {
                 printf("┗━━━━━━━━━━━━┻━━━━━━━━━━┛ \n");
                 printf("\n");
 
-                // FIXME: Check if turning algorithm works well
-                if ((turn + prev_winner) % 2 != USER)
-                    ret = user_turn(user_chips, &user_betting_chips, com_betting_chips, turn);
-                else
-                    ret = computer_turn(calc_hand(user_card, shared_card1, shared_card2), com_chips, &com_betting_chips, user_betting_chips, turn);
+                switch ((turn + prev_winner) % 2) {
+                    case USER: 
+                        printf(RED"User's Turn \n"PLAIN);
+                        ret = user_turn(user_chips, &user_betting_chips, com_betting_chips, turn);
+                        break;
+                    case COMPUTER:
+                        printf(RED"Computer's Turn \n"PLAIN);
+                        ret = computer_turn(calc_hand(computer_card, shared_card1, shared_card2), com_chips, &com_betting_chips, user_betting_chips, turn);
+                        break;
+                }
                 if (ret == CALL || ret == FOLD) break;
             }
 
