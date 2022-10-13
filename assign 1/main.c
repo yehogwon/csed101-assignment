@@ -239,7 +239,7 @@ int com_do_raise(int user_hand, int com_chips, int *com_betting_chips, int bette
 
 int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn) {
     int prob = rand() % 100, ret;
-    if (user_hand == DOUBLE || user_hand == STRAIGHT || user_hand == TRIPLE) {
+    if (user_hand > NOPAIR) {
         if (prob < 70) ret = -1;
         else {
             if (turn != 1) ret = com_do_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
