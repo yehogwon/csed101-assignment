@@ -71,13 +71,11 @@ int main(void) {
         int user_betting_chips = 1, com_betting_chips = 1;
         int turn, ret = -100;
         if (user_chips != 1 && com_chips != 1) {
+            printf("┏━━━━━━━━━━━━━━━━━━━━━━━━┓ \n");
+            printf("┃        Betting         ┃ \n");
+            printf("┗━━━━━━━━━━━━━━━━━━━━━━━━┛ \n");
+            printf("\n");
             for (turn = 1;; turn++) {
-                printf("┏━━━━━━━━━━━━━━━━━━━━━━━━┓ \n");
-                printf("┃        Betting         ┃ \n");
-                printf("┗━━━━━━━━━━━━━━━━━━━━━━━━┛ \n");
-                printf("\n");
-
-
                 printf("┏━━━━━━━━━━━━┳━━━━━━━━━━┓ \n");
                 printf("┃ User:%3d   ┃ Com:%3d  ┃ \n", user_betting_chips, com_betting_chips);
                 printf("┗━━━━━━━━━━━━┻━━━━━━━━━━┛ \n");
@@ -92,10 +90,15 @@ int main(void) {
                         break;
                 }
                 if (ret == CALL || ret == FOLD) break;
+                printf("\n");
             }
 
+            printf("\n");
             printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n");
+            printf("\n");
+
             printf("Betting Finished \n");
+            printf("\n");
             print_card_info(shared_card1, shared_card2, user_card, computer_card);
         }
 
@@ -108,9 +111,16 @@ int main(void) {
         if (user_chips == 0 || com_chips == 0 || signal == -1) break;
     }
 
+    printf("\n");
     printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n");
+    printf("\n");
     printf("Number of Games: %d \n", round);
+    printf("\n");
+
+    printf("Chips remaining: \n");
     show_chips(user_chips, com_chips);
+
+    printf("\n");
     printf("%s win! \n", user_chips >= com_chips ? "User" : "Computer");
 }
 
@@ -120,11 +130,11 @@ void print_game_status(int round, int user_chips, int com_chips) {
     printf("┗━━━━━━━━━━━━━━━━━━━━━┛ \n");
     printf("\n");
 
+    printf("Chips remaining: \n");
     show_chips(user_chips, com_chips);
 }
 
 void show_chips(int user_chips, int com_chips) {
-    printf("Chips remaining: \n");
     printf("┏━━━━━━━━━━━━━━┳━━━━━━┓ \n");
     printf("┃   User       ┃ %3d  ┃ \n", user_chips);
     printf("┃   Computer   ┃ %3d  ┃ \n", com_chips);
