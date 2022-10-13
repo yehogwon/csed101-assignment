@@ -92,7 +92,7 @@ int main(void) {
                         ret = user_turn(user_chips, &user_betting_chips, com_betting_chips, turn);
                         break;
                     case COMPUTER:
-                        ret = computer_turn(calc_hand(computer_card, shared_card1, shared_card2), com_chips, &com_betting_chips, user_betting_chips, turn);
+                        ret = computer_turn(calc_hand(user_card, shared_card1, shared_card2), com_chips, &com_betting_chips, user_betting_chips, turn);
                         break;
                 }
                 if (ret == CALL || ret == FOLD) break;
