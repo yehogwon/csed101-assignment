@@ -10,17 +10,16 @@
 #define USER 0
 #define COMPUTER 1
 
-#define CALL 0 // 같은 개수 배팅 후 끝냄
-#define RAISE 1 // 받고 더 가
-#define FOLD -1 // ㅌㅌㅌㅌ
+#define CALL 0
+#define RAISE 1
+#define FOLD -1
 
-#define NOPAIR 1 // 아무것도 없음
-#define DOUBLE 2 // 하나만 같음
-#define STRAIGHT 3 // 세 개 일열
-#define TRIPLE 4 // 다 똑같음
+#define NOPAIR 1
+#define DOUBLE 2
+#define STRAIGHT 3
+#define TRIPLE 4
 
 void clear() {
-    // printf("\033[H\033[J");
     system("clear");
 }
 
@@ -36,27 +35,22 @@ int find_min(int a, int b, int c) {
     return a > b ? (b > c ? c : b) : (a > c ? c : a);
 }
 
-// 2.1 게임 상태 출력
-void print_game_status(int round, int user_chips, int com_chips); // print the number of chips each player has
+void print_game_status(int round, int user_chips, int com_chips);
 void show_chips(int user_chips, int com_chips);
 
-// 2.2 카드 생성 및 출력
-void card_shuffle(int *shared_card1, int *shared_card2, int *user_card, int *computer_card); // generate 4 random cards
-void print_card_info(int shared_card1, int shared_card2, int user_card, int computer_card); // print the cards
+void card_shuffle(int *shared_card1, int *shared_card2, int *user_card, int *computer_card);
+void print_card_info(int shared_card1, int shared_card2, int user_card, int computer_card);
 
-// 3.2 유저의 베팅
-int is_valid_num(int a, int b, int num); // check if the number is within the range of [a, b]. return 1 if true, 0 otherwise
+int is_valid_num(int a, int b, int num);
 int is_valid_bet(int turn, int num);
-int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int turn); // get user's choice of betting and return it
+int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int turn);
 
-// 3.3 컴퓨터의 베팅
-int calc_hand(int card, int shard_card1, int shard_card2); // return the hand comparing to the shared cards
+int calc_hand(int card, int shard_card1, int shard_card2);
 int com_do_call(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn);
 int com_do_raise(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn, int count);
-int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn); // make computer's choice of betting up and return it
+int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn);
 
-// 4.4 게임 진행 여부 입력 및 처리
-int calc_winner(int shared_card1, int shared_card2, int user_card, int computer_card); // return the winner given the cards assuming that the betting turn have ended
+int calc_winner(int shared_card1, int shared_card2, int user_card, int computer_card);
 
 void update(int winner, int *user_chips, int *com_chips, int user_betting_chips, int com_betting_chips);
 
@@ -80,7 +74,7 @@ int main(void) {
         int ret = -100;
         if (user_chips != 1 && com_chips != 1) {
             int turn;
-            for (turn = 1;; turn++) { // Betting
+            for (turn = 1;; turn++) {
                 printf("┏━━━━━━━━━━━━━━━━━━━━━━━━┓ \n");
                 printf("┃        Betting         ┃ \n");
                 printf("┗━━━━━━━━━━━━━━━━━━━━━━━━┛ \n");
@@ -92,9 +86,9 @@ int main(void) {
                 printf("┗━━━━━━━━━━━━┻━━━━━━━━━━┛ \n");
                 printf("\n");
 
-                if ((turn + prev_winner) % 2 == COMPUTER) // User's turn
+                if ((turn + prev_winner) % 2 != USER)
                     ret = user_turn(user_chips, &user_betting_chips, com_betting_chips, turn);
-                else // Computer's turn
+                else
                     ret = computer_turn(calc_hand(user_card, shared_card1, shared_card2), com_chips, &com_betting_chips, user_betting_chips, turn);
                 if (ret == CALL || ret == FOLD) break;
             }
@@ -126,22 +120,6 @@ int main(void) {
     printf("%s win! \n", user_chips >= com_chips ? "User" : "Computer");
 }
 
-/*
- * Tokens
- * ━
- * ┃
- * ┗
- * ┛
- * ┏
- * ┓
- * ╋
- * ┳
- * ┫
- * ┻
- * ┣
- */
-
-// Start implementing the functions
 void print_game_status(int round, int user_chips, int com_chips) {
     printf("┏━━━━━━━━━━━━━━━━━━━━━┓ \n");
     printf("┃   %2d Game Starts!   ┃ \n", round);
@@ -201,13 +179,13 @@ int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int tur
         printf("USER ┃ [Invalid input] \n");
     }
     
-    if (action == 2) { // Raise
+    if (action == 2) {
         int raise;
         printf("USER ┃ [Input number of chips for Raise]: ");
         scanf("%d", &raise);
         *user_betting_chips = betted_chips + raise;
         return raise;
-    } else if (action == 1) { // Call
+    } else if (action == 1) {
         *user_betting_chips = betted_chips <= user_chips ? betted_chips : user_chips;
         return CALL;
     } else {
