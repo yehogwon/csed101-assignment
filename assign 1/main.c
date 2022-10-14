@@ -7,7 +7,8 @@
  * C Standard: C99
  * Editor and Terminal Font: Consolas
  * Encoding: UTF-8
- * End of Line: LF
+ * End of Line Sequence: LF
+ * Naming Convention: snake_case
 */
 
 // TODO: Refactor this code
@@ -77,6 +78,7 @@ int main(void) {
 
         int shared_card1, shared_card2, user_card, computer_card;
         card_shuffle(&shared_card1, &shared_card2, &user_card, &computer_card);
+        int user_hand = calc_hand(user_card, shared_card1, shared_card2);
 
         print_card_info(shared_card1, shared_card2, -1, computer_card);
 
@@ -98,7 +100,7 @@ int main(void) {
                         ret = user_turn(user_chips, &user_betting_chips, com_betting_chips, turn);
                         break;
                     case COMPUTER:
-                        ret = computer_turn(calc_hand(user_card, shared_card1, shared_card2), com_chips, &com_betting_chips, user_betting_chips, turn);
+                        ret = computer_turn(user_hand, com_chips, &com_betting_chips, user_betting_chips, turn);
                         break;
                 }
                 if (ret == CALL || ret == FOLD) break;
@@ -126,7 +128,7 @@ int main(void) {
     printf("\n");
     printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n");
     printf("\n");
-    printf("Number of Games: %d \n", round);
+    printf("Number of Games: %d \n", round > 10 ? round - 1 : round);
     printf("\n");
 
     printf("Chips remaining: \n");
