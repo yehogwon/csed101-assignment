@@ -1,7 +1,10 @@
 /**
  * Author: 20220358 권예호 (Yeho Gwon)
  * Date: 2022-10-31
- * Environment: macOS 12.6, Visual Studio Code 1.72.1, gcc 14.0.0, C99
+ * OS: macOS 12.6, 
+ * IDE Environment: Visual Studio Code 1.72.1
+ * GCC version: gcc 14.0.0
+ * C Standard: C99
 */
 
 #include <stdio.h>
