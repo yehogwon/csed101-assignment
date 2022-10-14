@@ -11,9 +11,6 @@
 #include <time.h>
 #include <stdlib.h>
 
-#define PLAIN "\033[0;37m"
-#define RED "\033[1;31m"
-
 #define USER 0
 #define COMPUTER 1
 
@@ -27,7 +24,7 @@
 #define TRIPLE 4
 
 void clear() {
-    system("clear");
+    system("cls");
 }
 
 int find_max(int a, int b, int c) {
@@ -53,8 +50,8 @@ int is_valid_bet(int turn, int num);
 int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int turn);
 
 int calc_hand(int card, int shard_card1, int shard_card2);
-int com_do_call(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn);
-int com_do_raise(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn, int count);
+int com_call(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn);
+int com_raise(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn, int count);
 int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn);
 
 int calc_winner(int shared_card1, int shared_card2, int user_card, int computer_card);
@@ -220,14 +217,14 @@ int calc_hand(int card, int shard_card1, int shard_card2) {
     }
 }
 
-int com_do_call(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn) {
+int com_call(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn) {
     if (betted_chips > com_chips) *com_betting_chips = com_chips;
     else *com_betting_chips = betted_chips;
     return CALL;
 }
 
-int com_do_raise(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn, int count) {
-    if (count > com_chips) return com_do_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
+int com_raise(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn, int count) {
+    if (count > com_chips) return com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
     else {
         *com_betting_chips = betted_chips + count;
         return count;
@@ -239,12 +236,12 @@ int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int bett
     if (user_hand > NOPAIR) {
         if (prob < 70) ret = -1;
         else {
-            if (turn != 1) ret = com_do_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
-            else ret = com_do_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, 1);
+            if (turn != 1) ret = com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
+            else ret = com_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, 1);
         }
     } else {
-        if (prob < 50 && turn > 1) ret = com_do_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
-        else ret = com_do_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, rand() % 5 + 1);
+        if (prob < 50 && turn > 1) ret = com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
+        else ret = com_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, rand() % 5 + 1);
     }
     
     if (ret == CALL) printf("COM ┃ Call \n");
