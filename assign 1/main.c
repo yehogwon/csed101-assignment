@@ -7,6 +7,9 @@
  * C Standard: C99
 */
 
+// TODO: Refactor this code
+// TODO: Add comments on each line
+
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
