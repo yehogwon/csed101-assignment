@@ -261,6 +261,13 @@ int main(void) {
         // action이 FOLD인 경우 방금 턴을 진행한 플레이어가 패배한 것이므로, 승자는 1 - (turn + prev_winner) % 2이다. 
         // action이 FOLD가 아닌 경우, 카드 정보를 이용하여 승자를 판단한다. 
         prev_winner = action == FOLD ? 1 - (turn + prev_winner) % 2 : calc_winner(shared_card1, shared_card2, user_card, computer_card); 
+
+        // 주어진 승자를 이용하여 승자를 프린트한다. 
+        printf("┏━━━━━━━━━━━━━━━━━━━━━┓ \n");
+        printf("┃ %8s win!       ┃ \n", prev_winner == USER ? "User" : "Computer");
+        printf("┗━━━━━━━━━━━━━━━━━━━━━┛ \n");
+        printf("\n");
+
         update(prev_winner, &user_chips, &com_chips, user_betting_chips, com_betting_chips); // 계산된 승자에 따라 칩의 개수를 업데이트한다. 
 
         int signal; // 게임을 계속 진행할지 여부를 저장하는 변수를 선언한다. 
@@ -422,15 +429,7 @@ int calc_winner(int shared_card1, int shared_card2, int user_card, int computer_
     }
 }
 
-// FIXME: Check if this function works for two functionalities ; print and update
-void update(int winner, int *user_chips, int *com_chips, int user_betting_chips, int com_betting_chips) {
-    // 주어진 승자를 이용하여 승자를 프린트한다. 
-    printf("┏━━━━━━━━━━━━━━━━━━━━━┓ \n");
-    printf("┃ %8s win!       ┃ \n", winner == USER ? "User" : "Computer");
-    printf("┗━━━━━━━━━━━━━━━━━━━━━┛ \n");
-    printf("\n");
-
-    if (winner == USER) { // 유저가 이겼다면
+void update(int winner, int *user_chips, int *com_chips, int user_betting_chips, int com_betting_chips) {if (winner == USER) { // 유저가 이겼다면
         *user_chips += com_betting_chips; // 컴퓨터가 베팅한 칩의 개수만큼 유저에게 추가한다. 
         *com_chips -= com_betting_chips; // 컴퓨터가 베팅한 칩의 개수만큼 컴퓨터의 칩에서 뺀다.
     } else if (winner == COMPUTER) { // 컴퓨터가 이겼다면
