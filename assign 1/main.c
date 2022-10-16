@@ -35,9 +35,8 @@
 #define TRIPLE 4
 
 /**
- * 3개의 숫자가 주어질 때 최댓값을 반환하는 함수
- * 매개변수 a, b, c: 최댓값을 구할 숫자 3개
- * 리턴값: a, b, c 중 최댓값
+ * 화면을 지우는 함수
+ * 리턴값: 없음
 */
 void clear() {
     // FIRE: Change this code below to work on Windows i.e, system("cls");
@@ -200,42 +199,51 @@ void update(int winner, int *user_chips, int *com_chips, int user_betting_chips,
 int main(void) {
     srand(time(NULL));
 
-    int prev_winner = COMPUTER;
-    int user_chips = 50, com_chips = 50;
+    int prev_winner = COMPUTER; // 이전 턴의 승자를 저장한다. 첫 라운드는 유저의 턴으로 시작하므로 컴퓨터가 승리한 것으로 가정하고 초기화한다. 
+    int user_chips = 50, com_chips = 50; // 사용자와 컴퓨터가 각각 갖고 있는 칩의 총 개수를 정수형으로 저장한다. 
     
-    int round;
+    int round; // 현재 게임 라운드를 저장하는 변수이다. 모든 게임이 종료된 후 진행한 라운드 수를 출력해야 하므로 반복문 밖에서 선언한다. 
     for (round = 1; round <= 10; round++) {
-        clear();
-        print_game_status(round, user_chips, com_chips);
+        clear(); // 게임을 시작하기 전 화면을 지운다. 
+        print_game_status(round, user_chips, com_chips); // 현재 게임의 라운드 번호, 유저와 컴퓨터가 각각 갖고 있는 칩의 개수를 프린트한다. 
 
-        int shared_card1, shared_card2, user_card, computer_card;
-        card_shuffle(&shared_card1, &shared_card2, &user_card, &computer_card);
-        int user_hand = calc_hand(user_card, shared_card1, shared_card2);
+        int shared_card1, shared_card2, user_card, computer_card; // 공유 카드와 유저의 카드, 컴퓨터의 카드를 저장할 변수를 선언한다. 
+        card_shuffle(&shared_card1, &shared_card2, &user_card, &computer_card); // 4장의 카드를 무작위로 뽑아 할당한다. 
+        int user_hand = calc_hand(user_card, shared_card1, shared_card2); // 유저의 카드 조합을 계산한다. 뒤에서 값의 변화 없이 반복적으로 이용되므로 미리 계산하고 저장해둔다. 
 
-        print_card_info(shared_card1, shared_card2, -1, computer_card);
+        print_card_info(shared_card1, shared_card2, -1, computer_card); // 선택된 카드를 프린트한다. 이때, 유저의 카드는 숨겨져야 하므로 -1을 전달한다. 
 
-        int user_betting_chips = 1, com_betting_chips = 1;
-        int turn, ret = -100;
-        if (user_chips != 1 && com_chips != 1) {
+        int user_betting_chips = 1, com_betting_chips = 1; // 유저와 컴퓨터가 각각 베팅한 칩의 개수를 저장하는 변수를 선언한다. 베팅을 시작할 때 유저와 컴퓨터 모두 칩을 1개 씩 베팅한 상태로 시작하므로, 1로 초기화한다. 
+        int turn, action = -100; // 턴의 번호와 유저 혹은 컴퓨터의 동작을 저장하는 변수를 선언한다. 이때, 턴은 반복문 밖에서도 이용되므로 for 반복문 밖에서 선언한다. 
+        // 베팅이 진행되지 않는 상황을 고려하여 action를 -100으로 초기화한다. 이 초기값 (-100)은 -1이 아닌 다른 값으로 설정해도 무관하다. 
+        if (user_chips > 1 && com_chips > 1) { // 사용자와 컴퓨터가 갖고 있는 칩의 개수가 모두 1보다 클 때만 베팅을 진행한다. 
+            // 베팅이 시작되었다느 것을 보여준다. 
             printf("┏━━━━━━━━━━━━━━━━━━━━━━━━┓ \n");
             printf("┃        Betting         ┃ \n");
             printf("┗━━━━━━━━━━━━━━━━━━━━━━━━┛ \n");
             printf("\n");
-            for (turn = 1;; turn++) {
+
+            for (turn = 1;; turn++) { // 매 턴을 돌며 베팅을 시작한다. 
+                // 유저와 컴퓨터가 베팅한 칩의 개수를 각각 프린트한다. 
                 printf("┏━━━━━━━━━━━━┳━━━━━━━━━━┓ \n");
                 printf("┃ User:%3d   ┃ Com:%3d  ┃ \n", user_betting_chips, com_betting_chips);
                 printf("┗━━━━━━━━━━━━┻━━━━━━━━━━┛ \n");
                 printf("\n");
 
+                // 현재 턴이 유저의 턴인지 컴퓨터의 턴인지 계산한다. 
+                // prev_winner == 1 (COMPUTER) 라고 가정할 때, turn이 1에서 시작하므로 유저 (0)의 턴이다. 
+                // prev_winner == 0 (USER) 라고 가정할 때, turn이 1에서 시작하므로 첫 턴은 컴퓨터 (1)의 턴이다. 
                 switch ((turn + prev_winner) % 2) {
-                    case USER: 
-                        ret = user_turn(user_chips, &user_betting_chips, com_betting_chips, turn);
+                    case USER: // turn + prev_winner가 2로 나눠 떨어지는 경우
+                        // 사용자의 턴을 진행한다. 반환 값 (CALL, FOLD, 혹은 Raise한 칩의 개수)을 action에 저장한다. 
+                        action = user_turn(user_chips, &user_betting_chips, com_betting_chips, turn);
                         break;
-                    case COMPUTER:
-                        ret = computer_turn(user_hand, com_chips, &com_betting_chips, user_betting_chips, turn);
+                    case COMPUTER: // turn + prev_winner가 2로 나눠 떨어지지 않는 경우
+                        // 컴퓨터의 턴을 진행한다. 반환 값 (CALL, FOLD, 혹은 Raise한 칩의 개수)을 action에 저장한다. 
+                        action = computer_turn(user_hand, com_chips, &com_betting_chips, user_betting_chips, turn);
                         break;
                 }
-                if (ret == CALL || ret == FOLD) break;
+                if (action == CALL || action == FOLD) break; // Call 혹은 Fold를 선택한 경우 베팅을 종료한다.
                 printf("\n");
             }
 
@@ -243,31 +251,37 @@ int main(void) {
             printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n");
             printf("\n");
 
+            // 베팅이 끝났다는 것을 프린트한다. 
             printf("Betting Finished \n");
             printf("\n");
-            print_card_info(shared_card1, shared_card2, user_card, computer_card);
+            print_card_info(shared_card1, shared_card2, user_card, computer_card); // 베팅이 끝났으므로 유저의 카드를 포함한 모든 카드를 공개한다. 
         }
 
-        prev_winner = ret == FOLD ? 1 - (turn + prev_winner) % 2 : calc_winner(shared_card1, shared_card2, user_card, computer_card);
-        update(prev_winner, &user_chips, &com_chips, user_betting_chips, com_betting_chips);
+        // 승자를 계산하고, 그에 따라 유저와 컴퓨터의 칩의 개수를 업데이트한다. 
+        // action이 FOLD인 경우 방금 턴을 진행한 플레이어가 패배한 것이므로, 승자는 1 - (turn + prev_winner) % 2이다. 
+        // action이 FOLD가 아닌 경우, 카드 정보를 이용하여 승자를 판단한다. 
+        prev_winner = action == FOLD ? 1 - (turn + prev_winner) % 2 : calc_winner(shared_card1, shared_card2, user_card, computer_card); 
+        update(prev_winner, &user_chips, &com_chips, user_betting_chips, com_betting_chips); // 계산된 승자에 따라 칩의 개수를 업데이트한다. 
 
-        int signal;
+        int signal; // 게임을 계속 진행할지 여부를 저장하는 변수를 선언한다. 
         printf("Proceed or Not? [Go: 1, End: -1]: ");
         scanf("%d", &signal);
-        if (user_chips == 0 || com_chips == 0 || signal == -1) break;
+        if (user_chips == 0 || com_chips == 0 || signal == -1) break; // 유저 혹은 컴퓨터의 칩의 개수가 0이거나 유저가 게임 중지를 선택 (signal == -1)했다면 게임을 중지한다. 
     }
 
     printf("\n");
     printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n");
     printf("\n");
-    printf("Number of Games: %d \n", round > 10 ? round - 1 : round);
+    printf("Number of Games: %d \n", round > 10 ? round - 1 : round); // 게임 종료까지 진행한 라운드의 수를 프린트한다. 이때, 게임을 끝까지 진행한 경우 round가 11이 된 상태로 종료되므로, round > 10이면 round - 1을 프린트한다. 
+    // 즉, (round > 10 ? round - 1 : round)를 프린트한다. 
     printf("\n");
 
+    // 유저와 컴퓨터에게 남은 칩의 개수를 프린트한다. 
     printf("Chips remaining: \n");
     show_chips(user_chips, com_chips);
 
     printf("\n");
-    printf("%s win! \n", user_chips >= com_chips ? "User" : "Computer");
+    printf("%s win! \n", user_chips >= com_chips ? "User" : "Computer"); // 칩의 개수가 더 많은 플레이어를 전체 게임의 승자로 판단하고 이를 프린트한다. 이때 칩의 개수가 같다면 유저의 승리로 간주한다. 
 }
 
 void print_game_status(int round, int user_chips, int com_chips) {
@@ -408,19 +422,22 @@ int calc_winner(int shared_card1, int shared_card2, int user_card, int computer_
     }
 }
 
+// FIXME: Check if this function works for two functionalities ; print and update
 void update(int winner, int *user_chips, int *com_chips, int user_betting_chips, int com_betting_chips) {
+    // 주어진 승자를 이용하여 승자를 프린트한다. 
     printf("┏━━━━━━━━━━━━━━━━━━━━━┓ \n");
     printf("┃ %8s win!       ┃ \n", winner == USER ? "User" : "Computer");
     printf("┗━━━━━━━━━━━━━━━━━━━━━┛ \n");
     printf("\n");
 
-    if (winner == USER) {
-        *user_chips += com_betting_chips;
-        *com_chips -= com_betting_chips;
-    } else if (winner == COMPUTER) {
-        *user_chips -= user_betting_chips;
-        *com_chips += user_betting_chips;
+    if (winner == USER) { // 유저가 이겼다면
+        *user_chips += com_betting_chips; // 컴퓨터가 베팅한 칩의 개수만큼 유저에게 추가한다. 
+        *com_chips -= com_betting_chips; // 컴퓨터가 베팅한 칩의 개수만큼 컴퓨터의 칩에서 뺀다.
+    } else if (winner == COMPUTER) { // 컴퓨터가 이겼다면
+        *user_chips -= user_betting_chips; // 유저가 베팅한 칩의 개수만큼 유저의 칩에서 뺀다.
+        *com_chips += user_betting_chips; // 유저가 베팅한 칩의 개수만큼 컴퓨터에게 추가한다.
     }
 
+    // 현재 유저와 컴퓨터에게 각각 남은 칩의 개수를 프린트한다. 
     show_chips(*user_chips, *com_chips);
 }
