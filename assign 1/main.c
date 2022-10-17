@@ -399,6 +399,7 @@ int com_raise(int user_hand, int com_chips, int *com_betting_chips, int betted_c
     }
 }
 
+// FIXME: refactor
 int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn) {
     int prob = rand() % 100, ret;
     if (user_hand > NOPAIR) {
@@ -408,7 +409,8 @@ int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int bett
             else ret = com_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, 1);
         }
     } else {
-        if (prob < 50 && turn > 1) ret = com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
+        if (turn == 1) ret = com_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, 1);
+        else if (prob < 50) ret = com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn); // TODO: check if this IF statement works well
         else ret = com_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, rand() % 5 + 1);
     }
     
