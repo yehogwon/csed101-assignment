@@ -410,7 +410,7 @@ int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int bett
         }
     } else {
         if (turn == 1) ret = com_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, 1);
-        else if (prob < 50) ret = com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn); // TODO: check if this IF statement works well
+        else if (prob < 50) ret = com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
         else ret = com_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, rand() % 5 + 1);
     }
     
