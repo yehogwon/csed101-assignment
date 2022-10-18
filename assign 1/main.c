@@ -1,7 +1,7 @@
 /**
  * Author: 20220358 권예호 (Yeho Gwon)
  * Date: 2022-10-31
- * OS: macOS 12.6, 
+ * OS: macOS 12.6
  * IDE Environment: Visual Studio Code 1.72.1
  * GCC version: gcc 14.0.0
  * C Standard: C99
@@ -13,6 +13,7 @@
 
 // TODO: Refactor this code
 // TODO: Add comments on each line
+// comments: user_turn, calc_hand, com_call, com_raise, computer_turn
 
 // 필요한 헤더 파일을 포함시킨다. 
 #include <stdio.h> // 표준 입출력을 위해 포함시킨다. 
@@ -288,7 +289,7 @@ int main(void) {
     show_chips(user_chips, com_chips);
 
     printf("\n");
-    printf("%s win! \n", user_chips >= com_chips ? "User" : "Computer"); // 칩의 개수가 더 많은 플레이어를 전체 게임의 승자로 판단하고 이를 프린트한다. 이때 칩의 개수가 같다면 유저의 승리로 간주한다. 
+    printf("%s win! \n", user_chips >= com_chips ? "User" : "Computer"); // 칩의 개수가 더 많은 플레이어를 전체 게임의 최종 승자로 판단하고 이를 프린트한다. 이때 칩의 개수가 같다면 유저의 승리로 간주한다. 
 }
 
 void print_game_status(int round, int user_chips, int com_chips) {
@@ -420,13 +421,14 @@ int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int bett
 }
 
 int calc_winner(int shared_card1, int shared_card2, int user_card, int computer_card) {
-    int user_hand = calc_hand(user_card, shared_card1, shared_card2);
-    int com_hand = calc_hand(computer_card, shared_card1, shared_card2);
-    if (user_hand > com_hand) return USER;
-    else if (user_hand < com_hand) return COMPUTER;
-    else {
-        if (user_card < computer_card) return COMPUTER;
-        else return USER;
+    int user_hand = calc_hand(user_card, shared_card1, shared_card2); // 유저의 카드 조합을 계산한다. 
+    int com_hand = calc_hand(computer_card, shared_card1, shared_card2); // 컴퓨터의 카드 조합을 계산한다. 
+    // 유저와 컴퓨터 각각의 카드 조합을 계산하여 비교한다. 더 큰 (더 좋은) 카드 조합을 지닌 사람이 승자가 된다. 
+    if (user_hand > com_hand) return USER; // 유저의 카드 조합이 컴퓨터의 카드 조합보다 더 좋은 경우, 승자인 USER를 반환한다. 
+    else if (user_hand < com_hand) return COMPUTER; //  // 컴퓨터의 카드 조합이 유저의 카드 조합보다 더 좋은 경우, 승자인 COMPUTER를 반환한다. 
+    else { // 두 플레이어의 카드 조합이 같다면 숫자가 더 큰 카드를 지닌 사람을 승자로 판단한다. 
+        if (user_card < computer_card) return COMPUTER; // 컴퓨터의 카드 숫자가 유저의 카드 숫자보다 크다면 컴퓨터를 승자로 판단하여 COMPUTER를 반환한다. 
+        else return USER; // 이외의 경우, 즉 유저의 카드 숫자가 컴퓨터의 카드 숫자보다 크다면 유저를 승자로 판단하여 USER를 반환한다. 
     }
 }
 
