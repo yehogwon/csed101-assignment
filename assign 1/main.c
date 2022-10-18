@@ -13,7 +13,7 @@
 
 // TODO: Refactor this code
 // TODO: Add comments on each line
-// comments: user_turn, calc_hand, com_call, com_raise, computer_turn
+// comments: user_turn, com_call, com_raise, computer_turn
 
 // 필요한 헤더 파일을 포함시킨다. 
 #include <stdio.h> // 표준 입출력을 위해 포함시킨다. 
@@ -374,15 +374,16 @@ int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int tur
 }
 
 int calc_hand(int card, int shared_card1, int shared_card2) {
+    // 주어진 카드의 최솟값, 중간값, 최댓값을 구한다. (Straight를 간단하게 판별하기 위해 ; 1씩 차이남을 이용합니다)
     int max = find_max(card, shared_card1, shared_card2), middle = find_middle(card, shared_card1, shared_card2), min = find_min(card, shared_card1, shared_card2);
-    if (max == middle && middle == min) {
-        return TRIPLE;
-    } else if (card == shared_card1 || card == shared_card2) {
-        return DOUBLE;
-    } else if (max - middle == 1 && middle - min == 1) {
-        return STRAIGHT;
-    } else {
-        return NOPAIR;
+    if (max == middle && middle == min) { // 모든 카드가 같다면
+        return TRIPLE; // Triple의 조합이므로 TRIPLE을 반환한다. 
+    } else if (card == shared_card1 || card == shared_card2) { // 플레이어의 카드와 공유 카드 중 하나가 같다면
+        return DOUBLE; // Double의 조합이므로 DOUBLE을 반환한다.
+    } else if (max - middle == 1 && middle - min == 1) { // 모든 카드가 1씩 차이난다면
+        return STRAIGHT; // Straight의 조합이므로 STRAIGHT을 반환한다.
+    } else { // 모든 경우에 해당하지 않는다면
+        return NOPAIR; // 조합이 없으므로 NOPAIR을 반환한다. 
     }
 }
 
