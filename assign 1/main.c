@@ -357,16 +357,16 @@ int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int tur
         printf("USER ┃ [Invalid input] \n"); // 사용자가 입력한 액션이 유효하지 않다면 오류 메시지를 프린트하고 계속 반복한다. 
     }
     
-    if (action == 2) { // 액션이 2 (Raise)라면 추가적으로 Raise할 칩의 개수를 입력받는다. 
+    if (action == 1) { // 액션이 1 (Call)라면 
+        *user_betting_chips = betted_chips <= user_chips ? betted_chips : user_chips; // 유저가 갖고 있는 칩의 개수가 상대방이 갖고 있는 칩의 개수보다 크거나 같다면 상대방이 베팅한 칩의 갯수만큼 베팅하고, 
+        // 그렇지 않다면 (상대방이 베팅한 칩의 개수가 유저가 갖고 있는 칩의 개수보다 크다면) 유저가 갖고 있는 칩의 개수만큼 베팅 (올인)한다. 
+        return CALL; // Call 했다는 신호로 CALL을 반환한다. 
+    } else if (action == 2) { // 액션이 2 (Raise)라면 추가적으로 Raise할 칩의 개수를 입력받는다. 
         int raise; // Raise할 칩의 개수를 저장할 변수를 선언한다. 
         printf("USER ┃ [Input number of chips for Raise]: "); // Raise할 칩의 개수를 입력하라는 prompt를 프린트한다.
         scanf("%d", &raise); // Raise할 칩의 개수를 입력받는다.
         *user_betting_chips = betted_chips + raise; // 유저가 베팅한 칩의 개수를 상대방이 베팅한 칩의 개수에 추가적으로 Raise할 칩의 개수의 합으로 업데이트한다. 
         return raise; // 추가로 Raise한 칩의 개수를 프린트한다. 
-    } else if (action == 1) { // 액션이 1 (Call)라면 
-        *user_betting_chips = betted_chips <= user_chips ? betted_chips : user_chips; // 유저가 갖고 있는 칩의 개수가 상대방이 갖고 있는 칩의 개수보다 크거나 같다면 상대방이 베팅한 칩의 갯수만큼 베팅하고, 
-        // 그렇지 않다면 (상대방이 베팅한 칩의 개수가 유저가 갖고 있는 칩의 개수보다 크다면) 유저가 갖고 있는 칩의 개수만큼 베팅 (올인)한다. 
-        return CALL; // Call 했다는 신호로 CALL을 반환한다. 
     } else { // 이외의 경우 (Fold)
         return FOLD; // Fold 한다는 신호로 FOLD를 반환한다. 
     }
