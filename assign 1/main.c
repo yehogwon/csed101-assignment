@@ -388,16 +388,20 @@ int calc_hand(int card, int shared_card1, int shared_card2) {
 }
 
 int com_call(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn) {
-    if (betted_chips > com_chips) *com_betting_chips = com_chips;
-    else *com_betting_chips = betted_chips;
-    return CALL;
+    // 컴퓨터가 Call을 할 수 있도록 처리한다. 특히, 예외 처리를 포함하여 처리하는 경우가 반복되기에 함수로 구현한다. 
+    if (betted_chips > com_chips) *com_betting_chips = com_chips; // 상대방 (유저)이 이미 컴퓨터가 가진 칩보다 더 많이 베팅한 경우 올인 (지닌 칩을 모두 베팅)한다. 
+    else *com_betting_chips = betted_chips; // 이외의 경우 (상대방 (유저)가 베팅한 칩이 컴퓨터가 가진 칩의 개수보다 적은 경우) Call한다. (상대방이 베팅한 칩의 개수와 동일한 수의 칩을 베팅한다. )
+    return CALL; // Call을 했다는 신호로 CALL을 반환한다. 
 }
 
+// FIXME: Check if the condition of if statement is correct and works well. 
+// I bet that it would be correct with a condition of (count + betted_chips > com_chips)
 int com_raise(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn, int count) {
-    if (count > com_chips) return com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
-    else {
-        *com_betting_chips = betted_chips + count;
-        return count;
+    // 컴퓨터가 Raise를 할 수 있도록 처리한다. 특히, 예외 처리를 포함하여 처리하는 경우가 반복되기에 함수로 구현한다. 
+    if (count > com_chips) return com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn); // 컴퓨터가 가진 칩보다 더 많은 수의 칩을 Raise하고자 하면 Call한다. 또한 Call을 했다는 신호로 com_call() 함수의 반환값을 그대로 반환한다. 
+    else { // 이외의 경우에는 (정상적으로 count만큼 Raise할 수 있는 경우 ; 컴퓨터가 가진 칩의 개수가 (count + betted_chips)보다 크거나 같은 경우)
+        *com_betting_chips = betted_chips + count; // Raise에 따라 베팅한 칩의 개수를 betted_chips + count (상대방이 베팅한 칩의 개수보다 count만큼 더 많이)로 설정한다. 
+        return count; // Raise를 했으므로 Raise한 칩의 개수를 반환한다. 
     }
 }
 
