@@ -12,8 +12,6 @@
 */
 
 // TODO: Refactor this code
-// TODO: Add comments on each line
-// comments: user_turn, com_call, com_raise, computer_turn
 
 // 필요한 헤더 파일을 포함시킨다. 
 #include <stdio.h> // 표준 입출력을 위해 포함시킨다. 
@@ -359,7 +357,6 @@ int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int tur
         printf("USER ┃ [Invalid input] \n"); // 사용자가 입력한 액션이 유효하지 않다면 오류 메시지를 프린트하고 계속 반복한다. 
     }
     
-    // FIXME: Check if it's fine to re-order the following if statements. 
     if (action == 2) { // 액션이 2 (Raise)라면 추가적으로 Raise할 칩의 개수를 입력받는다. 
         int raise; // Raise할 칩의 개수를 저장할 변수를 선언한다. 
         printf("USER ┃ [Input number of chips for Raise]: "); // Raise할 칩의 개수를 입력하라는 prompt를 프린트한다.
@@ -411,20 +408,21 @@ int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int bett
     int prob = rand() % 100, ret; // 확률 처리를 할 prob 변수를 선언 및 percent scale로 초기화하고, 반환값을 저장할 ret 변수를 선언한다. 
     if (user_hand > NOPAIR) { // 유저의 카드 조합이 No Pair가 아니라면
         if (prob < 70) ret = FOLD; // 70%의 확률로  Fold를 한다. 
-        else {
-            if (turn != 1) ret = com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
-            else ret = com_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, 1);
+        else { // 30%의 확률로
+            if (turn != 1) ret = com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn); // 첫 번째 턴이 아니라면 Call한다. 
+            else ret = com_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, 1); // 첫 턴이라면 1개의 칩을 Raise한다. 
         }
-    } else {
-        if (turn == 1) ret = com_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, 1);
-        else if (prob < 50) ret = com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
-        else ret = com_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, rand() % 5 + 1);
+    } else { // 유저의 카드 조합이 No Pair라면
+        if (turn == 1) ret = com_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, 1); // 첫 번째 턴이라면 1개의 칩을 Raise한다. 
+        else if (prob < 50) ret = com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn); // 첫 턴이 아니라면 50% 확률로 Call한다. 
+        else ret = com_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, rand() % 5 + 1); // 나머지 경우에는 1개 ~ 5개의 칩을 무작위로 Raise한다. 
     }
     
+    // 컴퓨터가 선택한 액션에 따라 취한 액션을 프린트한다. 
     if (ret == CALL) printf("COM ┃ Call \n");
     else if (ret == FOLD) printf("COM ┃ Fold \n");
-    else printf("COM ┃ Raise, +%d \n", ret);
-    return ret;
+    else printf("COM ┃ Raise, +%d \n", ret); // 특히, Raise한 경우에는 추가로 Raise한 칩의 개수를 출력한다. 
+    return ret; // CALL, FOLD, 혹은 추가로 Raise한 칩의 개수를 프린트한다. 
 }
 
 int calc_winner(int shared_card1, int shared_card2, int user_card, int computer_card) {
