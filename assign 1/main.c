@@ -59,7 +59,7 @@ int find_max(int a, int b, int c) {
  * 리턴값: a, b, c 중 중간값
 */
 int find_middle(int a, int b, int c) {
-    return a > b ? (a > c ? (b > c ? b : c) : a) : (b > c ? (a > c ? a : c) : b);
+    return a > b ? (a > c ? (b > c ? b : c) : a) : (b > c ? (a > c ? a : c) : b); // 중첩된 삼항 연산자를 이용하여 중간값을 찾는다. 
 }
 
 /**
@@ -68,7 +68,7 @@ int find_middle(int a, int b, int c) {
  * 리턴값: a, b, c 중 최솟값
 */
 int find_min(int a, int b, int c) {
-    return a > b ? (b > c ? c : b) : (a > c ? c : a);
+    return a > b ? (b > c ? c : b) : (a > c ? c : a); // 중첩된 삼항 연산자를 이용하여 최솟값을 찾는다. 
 }
 
 /**
@@ -351,25 +351,27 @@ int is_valid_bet(int turn, int action) {
 }
 
 int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int turn) {
-    int action;
-    while (1) {
-        printf("USER ┃ [Call: 1 | Raise: 2 | Fold: 3]: ");
-        scanf("%d", &action);
-        if (is_valid_bet(turn, action)) break;
-        printf("USER ┃ [Invalid input] \n");
+    int action; // 사용자가 결정한 액션을 저장할 변수를 선언한다. 
+    while (1) { // 사용자가 유효한 액션을 입력할 때까지 반복한다. 
+        printf("USER ┃ [Call: 1 | Raise: 2 | Fold: 3]: "); // 사용자에게 액션을 입력하라는 prompt를 프린트한다. 
+        scanf("%d", &action); // 사용자의 액션을 입력받는다. 
+        if (is_valid_bet(turn, action)) break; // 사용자가 입력한 액션이 유효하다면 반복문을 탈출한다. 
+        printf("USER ┃ [Invalid input] \n"); // 사용자가 입력한 액션이 유효하지 않다면 오류 메시지를 프린트하고 계속 반복한다. 
     }
     
-    if (action == 2) {
-        int raise;
-        printf("USER ┃ [Input number of chips for Raise]: ");
-        scanf("%d", &raise);
-        *user_betting_chips = betted_chips + raise;
-        return raise;
-    } else if (action == 1) {
-        *user_betting_chips = betted_chips <= user_chips ? betted_chips : user_chips;
-        return CALL;
-    } else {
-        return FOLD;
+    // FIXME: Check if it's fine to re-order the following if statements. 
+    if (action == 2) { // 액션이 2 (Raise)라면 추가적으로 Raise할 칩의 개수를 입력받는다. 
+        int raise; // Raise할 칩의 개수를 저장할 변수를 선언한다. 
+        printf("USER ┃ [Input number of chips for Raise]: "); // Raise할 칩의 개수를 입력하라는 prompt를 프린트한다.
+        scanf("%d", &raise); // Raise할 칩의 개수를 입력받는다.
+        *user_betting_chips = betted_chips + raise; // 유저가 베팅한 칩의 개수를 상대방이 베팅한 칩의 개수에 추가적으로 Raise할 칩의 개수의 합으로 업데이트한다. 
+        return raise; // 추가로 Raise한 칩의 개수를 프린트한다. 
+    } else if (action == 1) { // 액션이 1 (Call)라면 
+        *user_betting_chips = betted_chips <= user_chips ? betted_chips : user_chips; // 유저가 갖고 있는 칩의 개수가 상대방이 갖고 있는 칩의 개수보다 크거나 같다면 상대방이 베팅한 칩의 갯수만큼 베팅하고, 
+        // 그렇지 않다면 (상대방이 베팅한 칩의 개수가 유저가 갖고 있는 칩의 개수보다 크다면) 유저가 갖고 있는 칩의 개수만큼 베팅 (올인)한다. 
+        return CALL; // Call 했다는 신호로 CALL을 반환한다. 
+    } else { // 이외의 경우 (Fold)
+        return FOLD; // Fold 한다는 신호로 FOLD를 반환한다. 
     }
 }
 
@@ -406,9 +408,9 @@ int com_raise(int user_hand, int com_chips, int *com_betting_chips, int betted_c
 }
 
 int computer_turn(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn) {
-    int prob = rand() % 100, ret;
-    if (user_hand > NOPAIR) {
-        if (prob < 70) ret = -1;
+    int prob = rand() % 100, ret; // 확률 처리를 할 prob 변수를 선언 및 percent scale로 초기화하고, 반환값을 저장할 ret 변수를 선언한다. 
+    if (user_hand > NOPAIR) { // 유저의 카드 조합이 No Pair가 아니라면
+        if (prob < 70) ret = FOLD; // 70%의 확률로  Fold를 한다. 
         else {
             if (turn != 1) ret = com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn);
             else ret = com_raise(user_hand, com_chips, com_betting_chips, betted_chips, turn, 1);
