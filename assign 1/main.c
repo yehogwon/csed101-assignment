@@ -231,6 +231,7 @@ int main(void) {
             printf("\n");
 
             // 베팅이 끝났다는 것을 프린트한다. 
+            // FIXME: Is it necessary to show the cards when the betting is not occured?
             printf("Betting Finished \n");
             printf("\n");
             print_card_info(shared_card1, shared_card2, user_card, computer_card); // 베팅이 끝났으므로 유저의 카드를 포함한 모든 카드를 공개한다. 

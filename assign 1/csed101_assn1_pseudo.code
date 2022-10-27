@@ -1,0 +1,19 @@
+for do
+    clear the screen
+    print the game status
+    choose four cards (i.e., user's card, computer's card, two shared cards)
+    print the cards except for the user's one
+    if (베팅을 하는 경우) do
+        for (베팅이 진행될 동안) do 
+            if (it's user's turn) do 
+                call user_turn() to get the user's action
+            end else do
+                call computer_turn() to get the computer's action
+            end
+            if (a player chose to call or fold) do
+                break
+            end
+        end
+        print the cards
+    end
+end
