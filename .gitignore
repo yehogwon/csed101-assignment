@@ -30,3 +30,10 @@
 
 .DS_Store
 main
+
+*.docx
+*.pdf
+
+!AssnReadMe.pdf
+!disciplinary.pdf
+!csed101_assn1.pdf
