@@ -33,6 +33,7 @@ main
 
 *.docx
 *.pdf
+*.pptx
 
 !AssnReadMe.pdf
 !disciplinary.pdf
