@@ -43,33 +43,6 @@ void clear() {
 }
 
 /**
- * 3개의 숫자가 주어질 때 최댓값을 반환하는 함수
- * 매개변수 a, b, c: 최댓값을 구할 숫자 3개
- * 리턴값: a, b, c 중 최댓값
-*/
-int find_max(int a, int b, int c) {
-    return a > b ? (a > c ? a : c) : (b > c ? b : c); // 중첩된 삼항 연산자를 이용하여 최댓값을 찾는다. 
-}
-
-/**
- * 3개의 숫자가 주어질 때 중간값을 반환하는 함수
- * 매개변수 a, b, c: 중간값을 구할 숫자 3개
- * 리턴값: a, b, c 중 중간값
-*/
-int find_middle(int a, int b, int c) {
-    return a > b ? (a > c ? (b > c ? b : c) : a) : (b > c ? (a > c ? a : c) : b); // 중첩된 삼항 연산자를 이용하여 중간값을 찾는다. 
-}
-
-/**
- * 3개의 숫자가 주어질 때 최솟값을 반환하는 함수
- * 매개변수 a, b, c: 최솟값을 구할 숫자 3개
- * 리턴값: a, b, c 중 최솟값
-*/
-int find_min(int a, int b, int c) {
-    return a > b ? (b > c ? c : b) : (a > c ? c : a); // 중첩된 삼항 연산자를 이용하여 최솟값을 찾는다. 
-}
-
-/**
  * 게임 상황이 주어졌을 때 게임 상태를 프린트하는 함수
  * 매개변수 round: 현재 진행중인 게임의 라운드 수
  * 매개변수 user_chips: 유저가 갖고 있는 칩의 개수
@@ -130,6 +103,13 @@ int is_valid_bet(int turn, int action);
  * 리턴값: Rold: -1, Call: 0, Raise라면 추가로 베팅한 칩의 개수
 */
 int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int turn);
+
+/**
+ * 두 개의 int형 포인터가 주어질 때 그 두 개의 값을 서로 바꾸는 함수
+ * 매개변수 p1, p2: int형 포인터
+ * 리턴값: 없음
+*/
+void swap(int *p1, int *p2);
 
 /**
  * 카드와 공유 카드가 주어질 때 그 카드의 조합을 반환하는 함수
@@ -372,9 +352,20 @@ int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int tur
     }
 }
 
+void swap(int *p1, int *p2) {
+    int temp = *p1;
+    *p1 = *p2;
+    *p2 = temp;
+}
+
 int calc_hand(int card, int shared_card1, int shared_card2) {
     // 주어진 카드의 최솟값, 중간값, 최댓값을 구한다. (Straight를 간단하게 판별하기 위해 ; 1씩 차이남을 이용합니다)
     int max = find_max(card, shared_card1, shared_card2), middle = find_middle(card, shared_card1, shared_card2), min = find_min(card, shared_card1, shared_card2);
+    if (max < middle) swap(&max, &middle);
+    if (max < min) swap(&max, &min);
+    if (middle < min) swap(&middle, &min);
+    
+    
     if (max == middle && middle == min) { // 모든 카드가 같다면
         return TRIPLE; // Triple의 조합이므로 TRIPLE을 반환한다. 
     } else if (card == shared_card1 || card == shared_card2) { // 플레이어의 카드와 공유 카드 중 하나가 같다면
