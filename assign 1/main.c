@@ -229,13 +229,12 @@ int main(void) {
             printf("\n");
             printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n");
             printf("\n");
-
-            // 베팅이 끝났다는 것을 프린트한다. 
-            // FIXME: Is it necessary to show the cards when the betting is not occured?
-            printf("Betting Finished \n");
-            printf("\n");
-            print_card_info(shared_card1, shared_card2, user_card, computer_card); // 베팅이 끝났으므로 유저의 카드를 포함한 모든 카드를 공개한다. 
         }
+
+        // 베팅이 끝났다는 것을 프린트한다. 
+        printf("Betting Finished \n");
+        printf("\n");
+        print_card_info(shared_card1, shared_card2, user_card, computer_card); // 베팅이 끝났으므로 유저의 카드를 포함한 모든 카드를 공개한다. 
 
         // 승자를 계산하고, 그에 따라 유저와 컴퓨터의 칩의 개수를 업데이트한다. 
         // action이 FOLD인 경우 방금 턴을 진행한 플레이어가 패배한 것이므로, 승자는 1 - (turn + prev_winner) % 2이다. 
