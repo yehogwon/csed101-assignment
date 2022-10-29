@@ -29,7 +29,9 @@
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
 
 .DS_Store
+
 *.out
+*pseudo.code
 
 *.docx
 *.pdf
