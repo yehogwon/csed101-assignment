@@ -427,12 +427,14 @@ int calc_winner(int shared_card1, int shared_card2, int user_card, int computer_
     }
 }
 
-void update(int winner, int *user_chips, int *com_chips, int user_betting_chips, int com_betting_chips) {if (winner == USER) { // 유저가 이겼다면
-        *user_chips += com_betting_chips; // 컴퓨터가 베팅한 칩의 개수만큼 유저에게 추가한다. 
-        *com_chips -= com_betting_chips; // 컴퓨터가 베팅한 칩의 개수만큼 컴퓨터의 칩에서 뺀다.
+void update(int winner, int *user_chips, int *com_chips, int user_betting_chips, int com_betting_chips) {
+    int update_chips = user_betting_chips + com_betting_chips; // 변경해야 하는 칩의 개수는 두 플레이어가 베팅한 칩의 개수의 합과 같다. 
+    if (winner == USER) { // 유저가 이겼다면
+        *user_chips += update_chips; // 컴퓨터가 베팅한 칩의 개수만큼 유저에게 추가한다. 
+        *com_chips -= update_chips; // 컴퓨터가 베팅한 칩의 개수만큼 컴퓨터의 칩에서 뺀다.
     } else if (winner == COMPUTER) { // 컴퓨터가 이겼다면
-        *user_chips -= user_betting_chips; // 유저가 베팅한 칩의 개수만큼 유저의 칩에서 뺀다.
-        *com_chips += user_betting_chips; // 유저가 베팅한 칩의 개수만큼 컴퓨터에게 추가한다.
+        *user_chips -= update_chips; // 유저가 베팅한 칩의 개수만큼 유저의 칩에서 뺀다.
+        *com_chips += update_chips; // 유저가 베팅한 칩의 개수만큼 컴퓨터에게 추가한다.
     }
 
     // 현재 유저와 컴퓨터에게 각각 남은 칩의 개수를 프린트한다. 
