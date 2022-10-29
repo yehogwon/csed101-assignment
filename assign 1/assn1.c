@@ -361,7 +361,7 @@ void swap(int *p1, int *p2) {
 
 int calc_hand(int card, int shared_card1, int shared_card2) {
     // 주어진 카드의 최솟값, 중간값, 최댓값을 구한다. (Straight를 간단하게 판별하기 위해 ; 1씩 차이남을 이용합니다)
-    int max, middle, min;
+    int max = card, middle = shared_card1, min = shared_card2;
     if (max < middle) swap(&max, &middle);
     if (max < min) swap(&max, &min);
     if (middle < min) swap(&middle, &min);
