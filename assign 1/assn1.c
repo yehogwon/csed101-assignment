@@ -354,9 +354,9 @@ int user_turn(int user_chips, int *user_betting_chips, int betted_chips, int tur
 }
 
 void swap(int *p1, int *p2) {
-    int temp = *p1;
-    *p1 = *p2;
-    *p2 = temp;
+    int temp = *p1; // p1가 가리키는 변수의 값을 임시 변수에 저장한다. 
+    *p1 = *p2; // p1이 가리키는 변수의 값을 p2가 가리키는 변수의 값으로 바꾼다. 
+    *p2 = temp; // p2가 가리키는 변수의 값을 임시 변수에 저장했던 값으로 바꾼다. 
 }
 
 int calc_hand(int card, int shared_card1, int shared_card2) {
