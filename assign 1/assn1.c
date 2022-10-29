@@ -267,7 +267,7 @@ int main(void) {
 }
 
 void clear(void) {
-    // macOS에서 작성하여 "cls"가 아닌 "clear"를 이용했습니다. 
+    // macOS의 zsh shell 환경을 기준으로 작성하여 "cls"가 아닌 "clear"를 이용했습니다. 
     system("clear");
 }
 
