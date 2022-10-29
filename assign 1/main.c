@@ -361,7 +361,7 @@ void swap(int *p1, int *p2) {
 
 int calc_hand(int card, int shared_card1, int shared_card2) {
     // 주어진 카드의 최솟값, 중간값, 최댓값을 구한다. (Straight를 간단하게 판별하기 위해 ; 1씩 차이남을 이용합니다)
-    int max = find_max(card, shared_card1, shared_card2), middle = find_middle(card, shared_card1, shared_card2), min = find_min(card, shared_card1, shared_card2);
+    int max, middle, min;
     if (max < middle) swap(&max, &middle);
     if (max < min) swap(&max, &min);
     if (middle < min) swap(&middle, &min);
@@ -385,11 +385,10 @@ int com_call(int user_hand, int com_chips, int *com_betting_chips, int betted_ch
     return CALL; // Call을 했다는 신호로 CALL을 반환한다. 
 }
 
-// FIXME: Check if the condition of if statement is correct and works well. 
-// I bet that it would be correct with a condition of (count + betted_chips > com_chips)
+// TODO: Check if this if statement below works well
 int com_raise(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn, int count) {
     // 컴퓨터가 Raise를 할 수 있도록 처리한다. 특히, 예외 처리를 포함하여 처리하는 경우가 반복되기에 함수로 구현한다. 
-    if (count > com_chips) return com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn); // 컴퓨터가 가진 칩보다 더 많은 수의 칩을 Raise하고자 하면 Call한다. 또한 Call을 했다는 신호로 com_call() 함수의 반환값을 그대로 반환한다. 
+    if (betted_chips + count > com_chips > com_chips) return com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn); // 컴퓨터가 가진 칩보다 더 많은 수의 칩을 Raise하고자 하면 Call한다. 또한 Call을 했다는 신호로 com_call() 함수의 반환값을 그대로 반환한다. 
     else { // 이외의 경우에는 (정상적으로 count만큼 Raise할 수 있는 경우 ; 컴퓨터가 가진 칩의 개수가 (count + betted_chips)보다 크거나 같은 경우)
         *com_betting_chips = betted_chips + count; // Raise에 따라 베팅한 칩의 개수를 betted_chips + count (상대방이 베팅한 칩의 개수보다 count만큼 더 많이)로 설정한다. 
         return count; // Raise를 했으므로 Raise한 칩의 개수를 반환한다. 
