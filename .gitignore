@@ -36,6 +36,9 @@
 *.docx
 *.pdf
 *.pptx
+*.jpg
+*.jpeg
+*.png
 
 !AssnReadMe.pdf
 !disciplinary.pdf
