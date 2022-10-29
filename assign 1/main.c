@@ -38,7 +38,7 @@
  * 리턴값: 없음
 */
 void clear() {
-    // FIRE: Change this code below to work on Windows i.e, system("cls");
+    // macOS에서 작성하여 "cls"가 아닌 "clear"를 이용했습니다. 
     system("clear");
 }
 
@@ -384,7 +384,6 @@ int com_call(int user_hand, int com_chips, int *com_betting_chips, int betted_ch
     return CALL; // Call을 했다는 신호로 CALL을 반환한다. 
 }
 
-// TODO: Check if this if statement below works well
 int com_raise(int user_hand, int com_chips, int *com_betting_chips, int betted_chips, int turn, int count) {
     // 컴퓨터가 Raise를 할 수 있도록 처리한다. 특히, 예외 처리를 포함하여 처리하는 경우가 반복되기에 함수로 구현한다. 
     if (betted_chips + count > com_chips > com_chips) return com_call(user_hand, com_chips, com_betting_chips, betted_chips, turn); // 컴퓨터가 가진 칩보다 더 많은 수의 칩을 Raise하고자 하면 Call한다. 또한 Call을 했다는 신호로 com_call() 함수의 반환값을 그대로 반환한다. 
