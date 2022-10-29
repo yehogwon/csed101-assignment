@@ -36,10 +36,7 @@
  * 화면을 지우는 함수
  * 리턴값: 없음
 */
-void clear() {
-    // macOS에서 작성하여 "cls"가 아닌 "clear"를 이용했습니다. 
-    system("clear");
-}
+void clear();
 
 /**
  * 게임 상황이 주어졌을 때 게임 상태를 프린트하는 함수
@@ -267,6 +264,11 @@ int main(void) {
 
     printf("\n");
     printf("%s win! \n", user_chips >= com_chips ? "User" : "Computer"); // 칩의 개수가 더 많은 플레이어를 전체 게임의 최종 승자로 판단하고 이를 프린트한다. 이때 칩의 개수가 같다면 유저의 승리로 간주한다. 
+}
+
+void clear() {
+    // macOS에서 작성하여 "cls"가 아닌 "clear"를 이용했습니다. 
+    system("clear");
 }
 
 void print_game_status(int round, int user_chips, int com_chips) {
