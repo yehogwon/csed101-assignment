@@ -29,7 +29,7 @@
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
 
 .DS_Store
-main
+*.out
 
 *.docx
 *.pdf
@@ -37,4 +37,3 @@ main
 
 !AssnReadMe.pdf
 !disciplinary.pdf
-!csed101_assn1.pdf
