@@ -366,7 +366,6 @@ int calc_hand(int card, int shared_card1, int shared_card2) {
     if (max < min) swap(&max, &min);
     if (middle < min) swap(&middle, &min);
     
-    
     if (max == middle && middle == min) { // 모든 카드가 같다면
         return TRIPLE; // Triple의 조합이므로 TRIPLE을 반환한다. 
     } else if (card == shared_card1 || card == shared_card2) { // 플레이어의 카드와 공유 카드 중 하나가 같다면
