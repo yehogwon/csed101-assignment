@@ -40,5 +40,7 @@
 *.jpeg
 *.png
 
+*drawio*
+
 !AssnReadMe.pdf
 !disciplinary.pdf
