@@ -11,6 +11,7 @@
 */
 
 // TODO: Refactor this code
+// TODO: Use max() and min() instead of ? : operator
 
 // 필요한 헤더 파일을 포함시킨다. 
 #include <stdio.h> // 표준 입출력을 위해 포함시킨다. 
