@@ -222,6 +222,12 @@ int main(void) {
             }
 
             printf("\n");
+            printf("┏━━━━━━━━━━━━┳━━━━━━━━━━┓ \n");
+            printf("┃ User:%3d   ┃ Com:%3d  ┃ \n", user_betting_chips, com_betting_chips);
+            printf("┗━━━━━━━━━━━━┻━━━━━━━━━━┛ \n");
+            printf("\n");
+
+            printf("\n");
             printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n");
             printf("\n");
         }
