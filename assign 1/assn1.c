@@ -10,9 +10,6 @@
  * Naming Convention: snake_case
 */
 
-// TODO: Refactor this code
-// TODO: Use max() and min() instead of ? : operator
-
 // 필요한 헤더 파일을 포함시킨다. 
 #include <stdio.h> // 표준 입출력을 위해 포함시킨다. 
 #include <time.h> // 화면 지우기 및 랜덤 시드를 시간 (초)로 설정하기 위해 포함시킨다.
