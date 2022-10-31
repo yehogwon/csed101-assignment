@@ -13,7 +13,7 @@
 // 필요한 헤더 파일을 포함시킨다. 
 #include <stdio.h> // 표준 입출력을 위해 포함시킨다. 
 #include <time.h> // 화면 지우기 및 랜덤 시드를 시간 (초)로 설정하기 위해 포함시킨다.
-#include <stdlib.h> // 랜덤 함수를 사용하기 위해 포함시킨다.
+#include <stdlib.h> // 랜덤 함수 (rand()) 및 system 함수 (system()) 를 사용하기 위해 포함시킨다.
 
 // 승자 및 현재 턴 정보를 편리하게 저장 및 이용하기 위해 상수 처리한다. 
 #define USER 0
