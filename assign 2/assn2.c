@@ -19,11 +19,16 @@
 void set_color_rgb(int r, int g, int b);
 void reset_color();
 
+// Tool
+int max(int arr[][SIZE][SIZE]);
+int min(int arr[][SIZE][SIZE]);
+
 // Image File Management
 int load_image(const char *filename, int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int *width, int *height);
 void save_image(int image_rgb[][SIZE][SIZE], int width, int height);
 
 // Image Modification
+void rgb_to_hsv(const int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int width, int height);
 void change_color(int image_hsv[][SIZE][SIZE], int width, int height, int source, int target);
 
 // Image Visualization
@@ -93,6 +98,30 @@ void reset_color() {
     printf("\033[0m");
 }
 
+int max(int arr[3][SIZE][SIZE]) {
+    int max = arr[0][0][0];
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            for (int k = 0; k < SIZE; k++) {
+                if (arr[i][j][k] > max) max = arr[i][j][k];
+            }
+        }
+    }
+    return max;
+}
+
+int min(int arr[3][SIZE][SIZE]) {
+    int min = arr[0][0][0];
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            for (int k = 0; k < SIZE; k++) {
+                if (arr[i][j][k] < min) min = arr[i][j][k];
+            }
+        }
+    }
+    return min;
+}
+
 int load_image(const char *filename, int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int *width, int *height) {
     FILE *f = fopen(filename, "r");
     if (f == NULL) return 0;
@@ -109,8 +138,39 @@ int load_image(const char *filename, int image_rgb[][SIZE][SIZE], float image_hs
         }
     }
 
+    rgb_to_hsv(image_rgb, image_hsv, *width, *height);
+
     fclose(f);
     return 1;
+}
+
+void rgb_to_hsv(const int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int width, int height) {
+    float c_max = max(image_rgb) / 255.0, c_min = min(image_rgb) / 255.0;
+    float delta = c_max - c_min;
+
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            float r = image_rgb[0][i][j] / 255.0, g = image_rgb[1][i][j] / 255.0, b = image_rgb[2][i][j] / 255.0;
+            float h, s, v;
+
+            // Compute H
+            if (delta == 0) h = 0;
+            else if (c_max == r) h = 60 * (((g - b) / delta) % 6);
+            else if (c_max == g) h = 60 * (((b - r) / delta) + 2);
+            else if (c_max == b) h = 60 * (((r - g) / delta) + 4);
+
+            // Compute S
+            if (c_max == 0) s = 0;
+            else s = delta / c_max;
+
+            // Compute V
+            v = c_max;
+
+            image_hsv[0][i][j] = h;
+            image_hsv[1][i][j] = s;
+            image_hsv[2][i][j] = v;
+        }
+    }
 }
 
 void print_image(int image_rgb[][SIZE][SIZE], int width, int height) {
