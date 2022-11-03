@@ -12,6 +12,7 @@
 */
 
 #include <stdio.h>
+#include <math.h>
 
 #define SIZE 75
 
@@ -28,7 +29,8 @@ int load_image(const char *filename, int image_rgb[][SIZE][SIZE], float image_hs
 void save_image(int image_rgb[][SIZE][SIZE], int width, int height);
 
 // Image Modification
-void rgb_to_hsv(const int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int width, int height);
+void rgb_to_hsv(int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int width, int height);
+void hsv_to_rgb(float image_hsv[][SIZE][SIZE], int image_rgb[][SIZE][SIZE], int width, int height);
 void change_color(int image_hsv[][SIZE][SIZE], int width, int height, int source, int target);
 
 // Image Visualization
@@ -98,7 +100,7 @@ void reset_color() {
     printf("\033[0m");
 }
 
-int max(int arr[3][SIZE][SIZE]) {
+int max(int arr[][SIZE][SIZE]) {
     int max = arr[0][0][0];
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < SIZE; j++) {
@@ -110,7 +112,7 @@ int max(int arr[3][SIZE][SIZE]) {
     return max;
 }
 
-int min(int arr[3][SIZE][SIZE]) {
+int min(int arr[][SIZE][SIZE]) {
     int min = arr[0][0][0];
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < SIZE; j++) {
@@ -144,7 +146,7 @@ int load_image(const char *filename, int image_rgb[][SIZE][SIZE], float image_hs
     return 1;
 }
 
-void rgb_to_hsv(const int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int width, int height) {
+void rgb_to_hsv(int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int width, int height) {
     float c_max = max(image_rgb) / 255.0, c_min = min(image_rgb) / 255.0;
     float delta = c_max - c_min;
 
@@ -155,9 +157,10 @@ void rgb_to_hsv(const int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE]
 
             // Compute H
             if (delta == 0) h = 0;
-            else if (c_max == r) h = 60 * (((g - b) / delta) % 6);
+            else if (c_max == r) h = 60 * (((g - b) / delta));
             else if (c_max == g) h = 60 * (((b - r) / delta) + 2);
             else if (c_max == b) h = 60 * (((r - g) / delta) + 4);
+            if (h < 0) h += 360;
 
             // Compute S
             if (c_max == 0) s = 0;
@@ -169,6 +172,60 @@ void rgb_to_hsv(const int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE]
             image_hsv[0][i][j] = h;
             image_hsv[1][i][j] = s;
             image_hsv[2][i][j] = v;
+        }
+    }
+}
+
+void hsv_to_rgb(float image_hsv[][SIZE][SIZE], int image_rgb[][SIZE][SIZE], int width, int height) {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            float h = image_hsv[0][i][j], s = image_hsv[1][i][j], v = image_hsv[2][i][j];
+            float c = v * s;
+            float x = c * (1 - fabs(fmod(h / 60.0, 2) - 1));
+            float m = v - c;
+
+            float r, g, b;
+            switch ((int) (h / 60)) {
+                case 0:
+                    r = c;
+                    g = x;
+                    b = 0;
+                    break;
+                case 1:
+                    r = x;
+                    g = c;
+                    b = 0;
+                    break;
+                case 2:
+                    r = 0;
+                    g = c;
+                    b = x;
+                    break;
+                case 3:
+                    r = 0;
+                    g = x;
+                    b = c;
+                    break;
+                case 4:
+                    r = x;
+                    g = 0;
+                    b = c;
+                    break;
+                case 5:
+                    r = c;
+                    g = 0;
+                    b = x;
+                    break;
+                default:
+                    r = 0;
+                    g = 0;
+                    b = 0;
+                    break;
+            }
+
+            image_rgb[0][i][j] = (r + m) * 255;
+            image_rgb[1][i][j] = (g + m) * 255;
+            image_rgb[2][i][j] = (b + m) * 255;
         }
     }
 }
