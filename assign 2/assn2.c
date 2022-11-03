@@ -32,6 +32,7 @@ void save_image(int image_rgb[][SIZE][SIZE], int width, int height);
 
 // Image Modification
 void rgb_to_hsv(int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int width, int height);
+void dot_hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b);
 void hsv_to_rgb(float image_hsv[][SIZE][SIZE], int image_rgb[][SIZE][SIZE], int width, int height);
 void change_color(int image_hsv[][SIZE][SIZE], int width, int height, int source, int target);
 
@@ -120,7 +121,6 @@ int min(int arr[][SIZE][SIZE], int width, int height) {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < height; j++) {
             for (int k = 0; k < width; k++) {
-                // printf("cur: %d, min: %d \n", arr[i][j][k], min);
                 if (arr[i][j][k] < min) min = arr[i][j][k];
             }
         }
@@ -129,10 +129,11 @@ int min(int arr[][SIZE][SIZE], int width, int height) {
 }
 
 int comp_float(float a, float b) {
-    if (fabs(a - b) < ERROR) return 1;
+    if (fabsf(a - b) < ERROR) return 1;
     return 0;
 }
 
+// FIRE: Update the root path of the image files
 int load_image(const char *filename, int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int *width, int *height) {
     FILE *f = fopen(filename, "r");
     if (f == NULL) return 0;
@@ -158,7 +159,6 @@ int load_image(const char *filename, int image_rgb[][SIZE][SIZE], float image_hs
 void rgb_to_hsv(int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int width, int height) {
     float c_max = max(image_rgb, width, height) / 255.0, c_min = min(image_rgb, width, height) / 255.0;
     float delta = c_max - c_min;
-    printf("c_max: %f, c_min: %f, delta: %f \n", c_max, c_min, delta);
 
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
@@ -186,56 +186,61 @@ void rgb_to_hsv(int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int 
     }
 }
 
+void dot_hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b) {
+    float c = v * s;
+    float x = c * (1 - fabs(fmod(h / 60.0, 2) - 1));
+    float m = v - c;
+
+    float _r, _g, _b;
+    switch ((int) (h / 60)) {
+        case 0:
+            _r = c;
+            _g = x;
+            _b = 0;
+            break;
+        case 1:
+            _r = x;
+            _g = c;
+            _b = 0;
+            break;
+        case 2:
+            _r = 0;
+            _g = c;
+            _b = x;
+            break;
+        case 3:
+            _r = 0;
+            _g = x;
+            _b = c;
+            break;
+        case 4:
+            _r = x;
+            _g = 0;
+            _b = c;
+            break;
+        case 5:
+            _r = c;
+            _g = 0;
+            _b = x;
+            break;
+        default:
+            _r = 0;
+            _g = 0;
+            _b = 0;
+            break;
+    }
+
+    *r = (_r + m) * 255;
+    *g = (_g + m) * 255;
+    *b = (_b + m) * 255;
+}
+
 void hsv_to_rgb(float image_hsv[][SIZE][SIZE], int image_rgb[][SIZE][SIZE], int width, int height) {
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             float h = image_hsv[0][i][j], s = image_hsv[1][i][j], v = image_hsv[2][i][j];
-            float c = v * s;
-            float x = c * (1 - fabs(fmod(h / 60.0, 2) - 1));
-            float m = v - c;
-
-            float r, g, b;
-            switch ((int) (h / 60)) {
-                case 0:
-                    r = c;
-                    g = x;
-                    b = 0;
-                    break;
-                case 1:
-                    r = x;
-                    g = c;
-                    b = 0;
-                    break;
-                case 2:
-                    r = 0;
-                    g = c;
-                    b = x;
-                    break;
-                case 3:
-                    r = 0;
-                    g = x;
-                    b = c;
-                    break;
-                case 4:
-                    r = x;
-                    g = 0;
-                    b = c;
-                    break;
-                case 5:
-                    r = c;
-                    g = 0;
-                    b = x;
-                    break;
-                default:
-                    r = 0;
-                    g = 0;
-                    b = 0;
-                    break;
-            }
-
-            image_rgb[0][i][j] = (r + m) * 255;
-            image_rgb[1][i][j] = (g + m) * 255;
-            image_rgb[2][i][j] = (b + m) * 255;
+            dot_hsv_to_rgb(image_hsv[0][i][j], image_hsv[1][i][j], image_hsv[2][i][j], 
+                &image_rgb[0][i][j], &image_rgb[1][i][j], &image_rgb[2][i][j]);
         }
     }
 }
@@ -251,11 +256,16 @@ void print_image(int image_rgb[][SIZE][SIZE], int width, int height) {
     }
 }
 
+// TODO: Implement me
 void print_histogram(float image_hsv[][SIZE][SIZE], int width, int height) {
     int histogram[12] = {0};
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            if (comp_float(image_hsv[1][i][j], 0)) continue;
+            if (comp_float(image_hsv[1][i][j], 0)) {
+                printf("\nClear !!\n");
+                continue;
+            }
+            printf("Cur : %d \t", (int) (image_hsv[0][i][j] / 30));
             histogram[(int) (image_hsv[0][i][j] / 30)]++;
         }
     }
@@ -263,7 +273,9 @@ void print_histogram(float image_hsv[][SIZE][SIZE], int width, int height) {
     for (int i = 0; i < 12; i++) {
         printf("[%2d]", i);
         for (int j = 0; j < histogram[i] / 10; j++) {
-            set_color_rgb(255, 255, 255);
+            int r, g, b;
+            dot_hsv_to_rgb(i * 30, 1, 1, &r, &g, &b);
+            set_color_rgb(r, g, b);
             printf("▇");
             reset_color();
         }
