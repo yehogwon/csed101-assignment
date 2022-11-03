@@ -22,8 +22,8 @@ void set_color_rgb(int r, int g, int b);
 void reset_color();
 
 // Tool
-int max(int arr[][SIZE][SIZE]);
-int min(int arr[][SIZE][SIZE]);
+int max(int arr[][SIZE][SIZE], int width, int height);
+int min(int arr[][SIZE][SIZE], int width, int height);
 int comp_float(float a, float b);
 
 // Image File Management
@@ -45,8 +45,8 @@ int main(void) {
     printf("Enter input filename: ");
     scanf("%s", file_name);
 
-    int image_rgb[3][SIZE][SIZE];
-    float image_hsv[3][SIZE][SIZE];
+    int image_rgb[3][SIZE][SIZE] = {0, 0, 0};
+    float image_hsv[3][SIZE][SIZE] = {0, 0, 0};
     int width, height;
     int file_status = load_image(file_name, image_rgb, image_hsv, &width, &height);
 
@@ -81,7 +81,6 @@ int main(void) {
         case 2:
             break;
         case 3:
-            hsv_to_rgb(image_hsv, image_rgb, width, height);
             print_image(image_rgb, width, height);
         case 4:
             break;
@@ -104,11 +103,11 @@ void reset_color() {
     printf("\033[0m");
 }
 
-int max(int arr[][SIZE][SIZE]) {
+int max(int arr[][SIZE][SIZE], int width, int height) {
     int max = arr[0][0][0];
     for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            for (int k = 0; k < SIZE; k++) {
+        for (int j = 0; j < height; j++) {
+            for (int k = 0; k < width; k++) {
                 if (arr[i][j][k] > max) max = arr[i][j][k];
             }
         }
@@ -116,11 +115,12 @@ int max(int arr[][SIZE][SIZE]) {
     return max;
 }
 
-int min(int arr[][SIZE][SIZE]) {
+int min(int arr[][SIZE][SIZE], int width, int height) {
     int min = arr[0][0][0];
     for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            for (int k = 0; k < SIZE; k++) {
+        for (int j = 0; j < height; j++) {
+            for (int k = 0; k < width; k++) {
+                // printf("cur: %d, min: %d \n", arr[i][j][k], min);
                 if (arr[i][j][k] < min) min = arr[i][j][k];
             }
         }
@@ -155,10 +155,10 @@ int load_image(const char *filename, int image_rgb[][SIZE][SIZE], float image_hs
     return 1;
 }
 
-// FIXME: An error occurs here
 void rgb_to_hsv(int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int width, int height) {
-    float c_max = max(image_rgb) / 255.0, c_min = min(image_rgb) / 255.0;
+    float c_max = max(image_rgb, width, height) / 255.0, c_min = min(image_rgb, width, height) / 255.0;
     float delta = c_max - c_min;
+    printf("c_max: %f, c_min: %f, delta: %f \n", c_max, c_min, delta);
 
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
