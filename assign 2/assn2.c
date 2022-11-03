@@ -15,6 +15,7 @@
 #include <math.h>
 
 #define SIZE 75
+#define ERROR 1e-5
 
 // For visualize
 void set_color_rgb(int r, int g, int b);
@@ -23,6 +24,7 @@ void reset_color();
 // Tool
 int max(int arr[][SIZE][SIZE]);
 int min(int arr[][SIZE][SIZE]);
+int comp_float(float a, float b);
 
 // Image File Management
 int load_image(const char *filename, int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int *width, int *height);
@@ -74,10 +76,12 @@ int main(void) {
 
     switch (menu) {
         case 1: 
+            print_histogram(image_hsv, width, height);
             break;
         case 2:
             break;
         case 3:
+            hsv_to_rgb(image_hsv, image_rgb, width, height);
             print_image(image_rgb, width, height);
         case 4:
             break;
@@ -124,6 +128,11 @@ int min(int arr[][SIZE][SIZE]) {
     return min;
 }
 
+int comp_float(float a, float b) {
+    if (fabs(a - b) < ERROR) return 1;
+    return 0;
+}
+
 int load_image(const char *filename, int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int *width, int *height) {
     FILE *f = fopen(filename, "r");
     if (f == NULL) return 0;
@@ -146,6 +155,7 @@ int load_image(const char *filename, int image_rgb[][SIZE][SIZE], float image_hs
     return 1;
 }
 
+// FIXME: An error occurs here
 void rgb_to_hsv(int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int width, int height) {
     float c_max = max(image_rgb) / 255.0, c_min = min(image_rgb) / 255.0;
     float delta = c_max - c_min;
@@ -238,5 +248,25 @@ void print_image(int image_rgb[][SIZE][SIZE], int width, int height) {
             reset_color();
         }
         printf("\n");
+    }
+}
+
+void print_histogram(float image_hsv[][SIZE][SIZE], int width, int height) {
+    int histogram[12] = {0};
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            if (comp_float(image_hsv[1][i][j], 0)) continue;
+            histogram[(int) (image_hsv[0][i][j] / 30)]++;
+        }
+    }
+
+    for (int i = 0; i < 12; i++) {
+        printf("[%2d]", i);
+        for (int j = 0; j < histogram[i] / 10; j++) {
+            set_color_rgb(255, 255, 255);
+            printf("▇");
+            reset_color();
+        }
+        printf("%d \n", histogram[i]);
     }
 }
