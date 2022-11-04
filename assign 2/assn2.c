@@ -87,6 +87,7 @@ int main(void) {
                 print_histogram(image_hsv, width, height);
                 break;
             case 2: 
+                print_histogram(image_hsv, width, height);
                 input_colors(&source, &target);
                 change_color(image_hsv, width, height, source, target);
                 break;
