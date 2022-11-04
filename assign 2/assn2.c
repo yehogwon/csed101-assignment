@@ -62,9 +62,9 @@ int main(void) {
     int flag = 1;
     while (flag) {
         printf("\n");
-        printf("======================== \n");
-        printf("   IMAGE COLOR CHANGER   \n");
-        printf("======================== \n");
+        printf("========================= \n");
+        printf("   IMAGE COLOR CHANGER    \n");
+        printf("========================= \n");
         printf(" 1. Image Histogram \n");
         printf(" 2. Change Color \n");
         printf(" 3. Print Image \n");
