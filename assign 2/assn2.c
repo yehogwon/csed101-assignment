@@ -22,8 +22,8 @@ void set_color_rgb(int r, int g, int b);
 void reset_color();
 
 // Tool
-int max(int arr[][SIZE][SIZE], int width, int height);
-int min(int arr[][SIZE][SIZE], int width, int height);
+float max(float a, float b, float c);
+float min(float a, float b, float c);
 int comp_float(float a, float b);
 int within(int n, int a, int b); // check if n is in [a, b]
 
@@ -58,44 +58,53 @@ int main(void) {
         printf("File not found: %s \n", file_name);
         return 404;
     }
-    
-    printf("======================== \n");
-    printf("   IMAGE COLOR CHANGER   \n");
-    printf("======================== \n");
-    printf(" 1. Image Histogram \n");
-    printf(" 2. Change Color \n");
-    printf(" 3. Print Image \n");
-    printf(" 4. Save Image \n");
-    printf(" 5. Exit \n");
-    printf("Loaded file: %s \n", file_name);
-    printf("\n");
 
-    int menu;
-    while (1) {
-        printf("Choose menu number >> ");
-        scanf("%d", &menu);
-        if (within(menu, 1, 5)) break;
-        printf("Wrong input! \n");
-    }
+    int flag = 1;
+    while (flag) {
+        printf("======================== \n");
+        printf("   IMAGE COLOR CHANGER   \n");
+        printf("======================== \n");
+        printf(" 1. Image Histogram \n");
+        printf(" 2. Change Color \n");
+        printf(" 3. Print Image \n");
+        printf(" 4. Save Image \n");
+        printf(" 5. Exit \n");
+        printf("Loaded file: %s \n", file_name);
+        printf("\n");
 
-    switch (menu) {
-        case 1: 
-            print_histogram(image_hsv, width, height);
-            break;
-        case 2:
-            int source, target;
-            input_colors(&source, &target);
-            break;
-        case 3:
-            print_image(image_rgb, width, height);
-        case 4:
-            save_image(image_rgb, width, height);
-            break;
-        case 5:
-            break;
-        default: 
-            printf("Something went wrong! This exception is not handled. \n");
-            return -500;
+        int menu;
+        while (1) {
+            printf("Choose menu number >> ");
+            scanf("%d", &menu);
+            if (within(menu, 1, 5)) break;
+            printf("Wrong input! \n");
+        }
+
+        switch (menu) {
+            case 1: 
+                print_histogram(image_hsv, width, height);
+                break;
+            // FIXME: Resolve this scope issue
+            case 2: {
+                int source, target;
+                input_colors(&source, &target);
+                break;
+            }
+            case 3:
+                hsv_to_rgb(image_hsv, image_rgb, width, height);
+                print_image(image_rgb, width, height);
+                break;
+            case 4:
+                hsv_to_rgb(image_hsv, image_rgb, width, height);
+                save_image(image_rgb, width, height);
+                break;
+            case 5:
+                flag = 0;
+                break;
+            default: 
+                printf("Something went wrong! This exception is not handled. \n");
+                return -500;
+        }
     }
 
     return 0;
@@ -110,27 +119,17 @@ void reset_color() {
     printf("\033[0m");
 }
 
-int max(int arr[][SIZE][SIZE], int width, int height) {
-    int max = arr[0][0][0];
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < height; j++) {
-            for (int k = 0; k < width; k++) {
-                if (arr[i][j][k] > max) max = arr[i][j][k];
-            }
-        }
-    }
+float max(float a, float b, float c) {
+    float max = a;
+    if (b > max) max = b;
+    if (c > max) max = c;
     return max;
 }
 
-int min(int arr[][SIZE][SIZE], int width, int height) {
-    int min = arr[0][0][0];
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < height; j++) {
-            for (int k = 0; k < width; k++) {
-                if (arr[i][j][k] < min) min = arr[i][j][k];
-            }
-        }
-    }
+float min(float a, float b, float c) {
+    float min = a;
+    if (b < min) min = b;
+    if (c < min) min = c;
     return min;
 }
 
@@ -179,12 +178,12 @@ void save_image(int image_rgb[][SIZE][SIZE], int width, int height) {
 }
 
 void rgb_to_hsv(int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int width, int height) {
-    float c_max = max(image_rgb, width, height) / 255.0, c_min = min(image_rgb, width, height) / 255.0;
-    float delta = c_max - c_min;
-
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             float r = image_rgb[0][i][j] / 255.0, g = image_rgb[1][i][j] / 255.0, b = image_rgb[2][i][j] / 255.0;
+            float c_max = max(r, g, b), c_min = min(r, g, b);
+            float delta = c_max - c_min;
+            
             float h, s, v;
 
             // Compute H
