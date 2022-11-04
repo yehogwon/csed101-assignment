@@ -37,7 +37,7 @@ void dot_hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b);
 void hsv_to_rgb(float image_hsv[][SIZE][SIZE], int image_rgb[][SIZE][SIZE], int width, int height);
 
 void input_colors(int *source, int *target);
-void change_color(int image_hsv[][SIZE][SIZE], int width, int height, int source, int target);
+void change_color(float image_hsv[][SIZE][SIZE], int width, int height, int source, int target);
 
 // Image Visualization
 void print_image(int image_rgb[][SIZE][SIZE], int width, int height);
@@ -88,6 +88,7 @@ int main(void) {
             case 2: {
                 int source, target;
                 input_colors(&source, &target);
+                change_color(image_hsv, width, height, source, target);
                 break;
             }
             case 3:
@@ -279,6 +280,17 @@ void input_colors(int *source, int *target) {
         scanf("%d", target);
         if (within(*target, 0, 11)) break;
         printf("Wrong input! \n");
+    }
+}
+
+void change_color(float image_hsv[][SIZE][SIZE], int width, int height, int source, int target) {
+    int diff = target - source;
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            image_hsv[0][i][j] += diff * 30;
+            if (image_hsv[0][i][j] < 0) image_hsv[0][i][j] += 360;
+            if (image_hsv[0][i][j] >= 360) image_hsv[0][i][j] -= 360;
+        }
     }
 }
 
