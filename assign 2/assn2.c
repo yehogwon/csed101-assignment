@@ -84,6 +84,7 @@ int main(void) {
         case 3:
             print_image(image_rgb, width, height);
         case 4:
+            save_image(image_rgb, width, height);
             break;
         case 5:
             break;
@@ -154,6 +155,17 @@ int load_image(const char *filename, int image_rgb[][SIZE][SIZE], float image_hs
 
     fclose(f);
     return 1;
+}
+
+void save_image(int image_rgb[][SIZE][SIZE], int width, int height) {
+    FILE *f = fopen("output.ppm", "w");
+    fprintf(f, "P3 %d %d %d\n", width, height, max(image_rgb, width, height));
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            fprintf(f, "%d %d %d ", image_rgb[0][i][j], image_rgb[1][i][j], image_rgb[2][i][j]);
+        }
+    }
+    fclose(f);
 }
 
 void rgb_to_hsv(int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int width, int height) {
