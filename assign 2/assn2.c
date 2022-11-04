@@ -305,16 +305,11 @@ void print_image(int image_rgb[][SIZE][SIZE], int width, int height) {
     }
 }
 
-// TODO: Implement me
 void print_histogram(float image_hsv[][SIZE][SIZE], int width, int height) {
     int histogram[12] = {0};
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            if (comp_float(image_hsv[1][i][j], 0)) {
-                printf("\nClear !!\n");
-                continue;
-            }
-            printf("Cur : %d \t", (int) (image_hsv[0][i][j] / 30));
+            if (comp_float(image_hsv[1][i][j], 0)) continue;
             histogram[(int) (image_hsv[0][i][j] / 30)]++;
         }
     }
