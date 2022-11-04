@@ -169,7 +169,7 @@ int load_image(const char *filename, int image_rgb[][SIZE][SIZE], float image_hs
 
 void save_image(int image_rgb[][SIZE][SIZE], int width, int height) {
     FILE *f = fopen("output.ppm", "w");
-    fprintf(f, "P3 %d %d %d\n", width, height, max(image_rgb, width, height));
+    fprintf(f, "P3 %d %d 255\n", width, height);
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             fprintf(f, "%d %d %d ", image_rgb[0][i][j], image_rgb[1][i][j], image_rgb[2][i][j]);
