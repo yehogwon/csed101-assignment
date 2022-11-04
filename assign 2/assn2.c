@@ -25,6 +25,7 @@ void reset_color();
 int max(int arr[][SIZE][SIZE], int width, int height);
 int min(int arr[][SIZE][SIZE], int width, int height);
 int comp_float(float a, float b);
+int within(int n, int a, int b); // check if n is in [a, b]
 
 // Image File Management
 int load_image(const char *filename, int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int *width, int *height);
@@ -34,6 +35,8 @@ void save_image(int image_rgb[][SIZE][SIZE], int width, int height);
 void rgb_to_hsv(int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int width, int height);
 void dot_hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b);
 void hsv_to_rgb(float image_hsv[][SIZE][SIZE], int image_rgb[][SIZE][SIZE], int width, int height);
+
+void input_colors(int *source, int *target);
 void change_color(int image_hsv[][SIZE][SIZE], int width, int height, int source, int target);
 
 // Image Visualization
@@ -71,7 +74,7 @@ int main(void) {
     while (1) {
         printf("Choose menu number >> ");
         scanf("%d", &menu);
-        if (menu >= 1 && menu <= 5) break;
+        if (within(menu, 1, 5)) break;
         printf("Wrong input! \n");
     }
 
@@ -80,6 +83,8 @@ int main(void) {
             print_histogram(image_hsv, width, height);
             break;
         case 2:
+            int source, target;
+            input_colors(&source, &target);
             break;
         case 3:
             print_image(image_rgb, width, height);
@@ -131,6 +136,11 @@ int min(int arr[][SIZE][SIZE], int width, int height) {
 
 int comp_float(float a, float b) {
     if (fabsf(a - b) < ERROR) return 1;
+    return 0;
+}
+
+int within(int n, int a, int b) {
+    if (a <= n && n <= b) return 1;
     return 0;
 }
 
@@ -254,6 +264,22 @@ void hsv_to_rgb(float image_hsv[][SIZE][SIZE], int image_rgb[][SIZE][SIZE], int 
             dot_hsv_to_rgb(image_hsv[0][i][j], image_hsv[1][i][j], image_hsv[2][i][j], 
                 &image_rgb[0][i][j], &image_rgb[1][i][j], &image_rgb[2][i][j]);
         }
+    }
+}
+
+void input_colors(int *source, int *target) {
+    while (1) {
+        printf("Choose source color >> ");
+        scanf("%d", source);
+        if (within(*source, 0, 11)) break;
+        printf("Wrong input! \n");
+    }
+
+    while (1) {
+        printf("Choose target color >> ");
+        scanf("%d", target);
+        if (within(*target, 0, 11)) break;
+        printf("Wrong input! \n");
     }
 }
 
