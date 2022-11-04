@@ -61,6 +61,7 @@ int main(void) {
 
     int flag = 1;
     while (flag) {
+        printf("\n");
         printf("======================== \n");
         printf("   IMAGE COLOR CHANGER   \n");
         printf("======================== \n");
@@ -80,17 +81,15 @@ int main(void) {
             printf("Wrong input! \n");
         }
 
+        int source, target;
         switch (menu) {
             case 1: 
                 print_histogram(image_hsv, width, height);
                 break;
-            // FIXME: Resolve this scope issue
-            case 2: {
-                int source, target;
+            case 2: 
                 input_colors(&source, &target);
                 change_color(image_hsv, width, height, source, target);
                 break;
-            }
             case 3:
                 hsv_to_rgb(image_hsv, image_rgb, width, height);
                 print_image(image_rgb, width, height);
@@ -110,7 +109,6 @@ int main(void) {
 
     return 0;
 }
-
 
 void set_color_rgb(int r, int g, int b) {
     printf("\033[38;2;%d;%d;%dm", r, g, b);
@@ -144,7 +142,6 @@ int within(int n, int a, int b) {
     return 0;
 }
 
-// FIRE: Update the root path of the image files
 int load_image(const char *filename, int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int *width, int *height) {
     FILE *f = fopen(filename, "r");
     if (f == NULL) return 0;
