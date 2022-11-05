@@ -324,13 +324,13 @@ void rgb_to_hsv(int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int 
 
 void dot_hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b) {
     /* 모든 변수의 이름은 pdf instruction을 따릅니다. */
-    float c = v * s;
-    float x = c * (1 - fabs(fmod(h / 60.0, 2) - 1));
-    float m = v - c;
+    float c = v * s; // v와 s를 곱해 c를 구한다. 
+    float x = c * (1 - fabs(fmod(h / 60.0, 2) - 1)); // 공식을 이용해 x를 구한다. 
+    float m = v - c; // v와 c의 차이로 m을 구한다. 
 
-    float _r, _g, _b;
+    float _r, _g, _b; // normalized r, g, b를 임시 저장할 변수를 선언한다. 
 
-    switch ((int) (h / 60)) {
+    switch ((int) (h / 60)) { // (h / 60)의 값에 따라 공식을 이용하여 각각의 경우에 맞는 r, g, b 값을 구하고 설정한다. 
         case 0:
             _r = c;
             _g = x;
@@ -356,18 +356,19 @@ void dot_hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b) {
             _g = 0;
             _b = c;
             break;
-        case 5:
+        case 5: 
             _r = c;
             _g = 0;
             _b = x;
             break;
-        default:
+        default: // 이외의 경우는 모두 0으로 설정한다. 
             _r = 0;
             _g = 0;
             _b = 0;
             break;
     }
 
+    // normalized _r, _g, _b에 m을 더해 [0, 1] 범위로 설정한 뒤, 255를 곱해 [0, 255] 범위로 설정한다. 계산된 각각의 값을 int 형으로 r, g, b에 저장한다. 
     *r = (_r + m) * 255;
     *g = (_g + m) * 255;
     *b = (_b + m) * 255;
