@@ -32,6 +32,7 @@
         "thread": "c",
         "variant": "c",
         "vector": "c",
-        "complex": "c"
+        "complex": "c",
+        "queue": "c"
     }
 }
