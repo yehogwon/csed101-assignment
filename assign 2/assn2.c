@@ -147,23 +147,27 @@ void print_image(int image_rgb[][SIZE][SIZE], int width, int height);
 void print_histogram(float image_hsv[][SIZE][SIZE], int width, int height);
 
 int main(void) {
-    char file_name[SIZE];
+    char file_name[SIZE]; // 이미지 파일 이름을 저장할 배열을 선언한다. (이후에 scanf로 입력받으므로 초기화하지 않는다. )
 
-    printf("Enter input filename: ");
-    scanf("%s", file_name);
+    printf("Enter input filename: "); // 이미지 파일 이름을 입력하라는 prompt를 출력한다. 
+    scanf("%s", file_name); // 이미지 파일 이름을 입력받는다. 
 
-    int image_rgb[3][SIZE][SIZE] = {0, 0, 0};
-    float image_hsv[3][SIZE][SIZE] = {0, 0, 0};
-    int width, height;
-    int file_status = load_image(file_name, image_rgb, image_hsv, &width, &height);
+    int image_rgb[3][SIZE][SIZE] = {0, 0, 0}; // RGB 이미지 정보를 저장할 3차원 배열을 선언하고 0으로 초기화한다. 
+    float image_hsv[3][SIZE][SIZE] = {0, 0, 0}; // HSV 이미지 정보를 저장할 3차원 배열을 선언하고 0으로 초기화한다.
+    int width, height; // 이미지의 가로 크기와 세로 크기를 저장할 변수를 선언한다. 
 
-    if (file_status == 0) {
+    // 이미지 파일을 읽고 픽셀 정보를 저장한다. 성공 여부를 file_status에 저장한다. 
+    int file_status = load_image(file_name, image_rgb, image_hsv, &width, &height); 
+
+    // 이미지 파일을 정상적으로 읽지 못했다면 에러 메시지를 출력하고 404 (not found) 를 반환하며 프로그램을 종료한다. 
+    if (file_status == 0) { 
         printf("File not found: %s \n", file_name);
         return 404;
     }
 
-    int flag = 1;
+    int flag = 1; // 프로그램 반복을 제어할 flag를 선언 후 1로 초기화한다. 
     while (flag) {
+        // 사용자가 선택할 수 있는 메뉴 옵션을 출력한다. 
         printf("\n");
         printf("========================= \n");
         printf("   IMAGE COLOR CHANGER    \n");
@@ -176,42 +180,45 @@ int main(void) {
         printf("Loaded file: %s \n", file_name);
         printf("\n");
 
+        // 사용자가 선택할 메뉴 번호를 입력받는다. 
         int menu;
-        while (1) {
+        while (1) { // 사용자가 valid한 메뉴 번호를 입력할 때까지 반복한다. 
             printf("Choose menu number >> ");
             scanf("%d", &menu);
-            if (within(menu, 1, 5)) break;
-            printf("Wrong input! \n");
+            if (within(menu, 1, 5)) break; // 사용자가 valid한 메뉴 번호를 입력했다면 반복을 종료한다. 
+            printf("Wrong input! \n"); // 그렇지 않다면 에러 메시지를 출력하고 다시 입력을 받는다. 
         }
 
-        int source, target;
-        switch (menu) {
-            case 1: 
-                print_histogram(image_hsv, width, height);
-                break;
-            case 2: 
-                print_histogram(image_hsv, width, height);
-                input_colors(&source, &target);
-                change_color(image_hsv, width, height, source, target);
-                break;
-            case 3:
-                hsv_to_rgb(image_hsv, image_rgb, width, height);
-                print_image(image_rgb, width, height);
-                break;
-            case 4:
-                hsv_to_rgb(image_hsv, image_rgb, width, height);
-                save_image(image_rgb, width, height);
-                break;
-            case 5:
-                flag = 0;
-                break;
-            default: 
-                printf("Something went wrong! This exception is not handled. \n");
-                return -500;
+        int source, target; // 사용자가 선택할 source 색조와 target 색조를 저장할 변수를 선언한다. 
+        // Note that variables cannot be declared in switch-case statements in C. So, we declare them outside of the switch-case statement. 
+
+        switch (menu) { // 사용자가 입력한 옵션에 따라 다음을 수행한다. 
+            case 1: // < 1. Image Histogram >을 선택한 경우에는 
+                print_histogram(image_hsv, width, height); // 이미지의 histogram을 출력한다. 
+                break; // 다음 case statement로 넘어가지 않기 위해 break한다. 
+            case 2: // < 2. Change Color >을 선택한 경우에는
+                print_histogram(image_hsv, width, height); // 이미지의 histogram을 출력하고
+                input_colors(&source, &target); // source 색조와 target 색조를 입력받은 뒤
+                change_color(image_hsv, width, height, source, target); // 이미지의 색조를 변경한다.
+                break; // 다음 case statement로 넘어가지 않기 위해 break한다. 
+            case 3: // < 3. Print Image >를 선택한 경우에는
+                hsv_to_rgb(image_hsv, image_rgb, width, height); // 이미지의 HSV가 modify 되었을 수 있으므로, HSV 정보를 RGB 정보로 변환하여 업데이트 한 뒤, 
+                print_image(image_rgb, width, height); // RGB로 이미지를 출력한다. 
+                break; // 다음 case statement로 넘어가지 않기 위해 break한다. 
+            case 4: // < 4. Save Image >를 선택한 경우에는
+                hsv_to_rgb(image_hsv, image_rgb, width, height); // 이미지의 HSV가 modify 되었을 수 있으므로, HSV 정보를 RGB 정보로 변환하여 업데이트 한 뒤,
+                save_image(image_rgb, width, height); // RGB로 이미지를 저장한다. 
+                break; // 다음 case statement로 넘어가지 않기 위해 break한다. 
+            case 5: // < 5. Exit >을 선택한 경우에는 
+                flag = 0; // flag를 0으로 설정하여 반복문을 탈출하고 프로그램을 종료한다. 
+                break; // 다음 case statement로 넘어가지 않기 위해 break한다. 
+            default: // 처리되지 않은 예외가 발생한 경우
+                printf("Something went wrong! This exception is not handled. \n"); // 오류 메시지를 프린트한 뒤
+                return -500; // -500을 반환하며 프로그램을 종료한다. 
         }
     }
 
-    return 0;
+    return 0; // 프로그램의 정상 종료 signal로 1을 반환하며 프로그램을 종료한다. 
 }
 
 void set_color_rgb(int r, int g, int b) {
@@ -282,30 +289,32 @@ void save_image(int image_rgb[][SIZE][SIZE], int width, int height) {
     fclose(f); // 파일을 닫는다.
 }
 
-// TODO: Add comments on the functions associated with color modification
 void rgb_to_hsv(int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int width, int height) {
+    /* 모든 변수의 이름은 pdf instruction을 따릅니다. */
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
+            // 현재 r, g, b 값을 [0, 1]로 normalize한다. 
             float r = image_rgb[0][i][j] / 255.0, g = image_rgb[1][i][j] / 255.0, b = image_rgb[2][i][j] / 255.0;
-            float c_max = max(r, g, b), c_min = min(r, g, b);
-            float delta = c_max - c_min;
+            float c_max = max(r, g, b), c_min = min(r, g, b); // normalized RGB 의 최댓값과 최솟값을 구해 c_max, c_min에 저장한다. 
+            float delta = c_max - c_min; // c_max와 c_min의 차이인 delta를 구한다. 
             
-            float h, s, v;
+            float h, s, v; // HSV 코드를 저장할 임시 변수를 선언한다. 
 
-            // Compute H
-            if (delta == 0) h = 0;
+            // hue를 계산한다 ; 
+            if (delta == 0) h = 0; // delta가 0일 때는 hue를 0으로 설정한다. 이외의 경우는 아래의 조건문을 통해 계산한다. 
             else if (c_max == r) h = 60 * (((g - b) / delta));
             else if (c_max == g) h = 60 * (((b - r) / delta) + 2);
             else if (c_max == b) h = 60 * (((r - g) / delta) + 4);
-            if (h < 0) h += 360;
+            if (h < 0) h += 360; // hue가 음수일 때는 360을 더해 정상 범위로 돌린다. 
 
-            // Compute S
-            if (c_max == 0) s = 0;
-            else s = delta / c_max;
+            // saturation을 계산한다 ; 
+            if (c_max == 0) s = 0; // c_max가 0일 때는 saturation은 0이 되며, 
+            else s = delta / c_max; // 그렇지 않다면 delta / c_max로 설정한다. 
 
-            // Compute V
-            v = c_max;
+            // value (key)를 계산한다 ; 
+            v = c_max; // c_max로 설정한다.
 
+            // 계산된 HSV 코드를 image_hsv 배열에 저장한다. 
             image_hsv[0][i][j] = h;
             image_hsv[1][i][j] = s;
             image_hsv[2][i][j] = v;
@@ -314,6 +323,7 @@ void rgb_to_hsv(int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int 
 }
 
 void dot_hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b) {
+    /* 모든 변수의 이름은 pdf instruction을 따릅니다. */
     float c = v * s;
     float x = c * (1 - fabs(fmod(h / 60.0, 2) - 1));
     float m = v - c;
@@ -367,6 +377,7 @@ void hsv_to_rgb(float image_hsv[][SIZE][SIZE], int image_rgb[][SIZE][SIZE], int 
     // 반복문을 돌며 각 픽셀의 HSV 값으로 RGB 값을 계산하고 저장한다. 
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
+            // Pixel에 대해 HSV를 RGB로 변환하는 함수 dot_hsv_to_rgb()를 이용하여 RGB 값을 계산 후 할당한다. 
             dot_hsv_to_rgb(image_hsv[0][i][j], image_hsv[1][i][j], image_hsv[2][i][j], 
                 &image_rgb[0][i][j], &image_rgb[1][i][j], &image_rgb[2][i][j]);
         }
