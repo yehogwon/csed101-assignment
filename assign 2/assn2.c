@@ -364,9 +364,9 @@ void dot_hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b) {
 }
 
 void hsv_to_rgb(float image_hsv[][SIZE][SIZE], int image_rgb[][SIZE][SIZE], int width, int height) {
+    // 반복문을 돌며 각 픽셀의 HSV 값으로 RGB 값을 계산하고 저장한다. 
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            float h = image_hsv[0][i][j], s = image_hsv[1][i][j], v = image_hsv[2][i][j];
             dot_hsv_to_rgb(image_hsv[0][i][j], image_hsv[1][i][j], image_hsv[2][i][j], 
                 &image_rgb[0][i][j], &image_rgb[1][i][j], &image_rgb[2][i][j]);
         }
