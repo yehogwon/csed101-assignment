@@ -33,6 +33,7 @@
         "variant": "c",
         "vector": "c",
         "complex": "c",
-        "queue": "c"
+        "queue": "c",
+        "cstdio": "c"
     }
 }
