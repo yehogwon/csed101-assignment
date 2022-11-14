@@ -18,9 +18,6 @@
 #define SIZE 75 // 파일 이름의 최대 크기 및 사진 pixel 정보를 담는 배열의 width와 height의 최대 크기를 상수로 정의한다. 
 #define ERROR 1e-5 // float 비교에 사용할 오차의 tolerance를 상수로 정의한다. 
 
-void grey_scale(int image_rgb[][SIZE][SIZE], int image_grey[][SIZE], int width, int height);
-void detect_edge(int image_rgb[][SIZE], int result[][SIZE], int width, int height);
-
 /**
  * printf의 출력 색을 RGB로 설정하는 함수
  * 매개변수 r, g, b: 출력 색의 색상 RGB 코드
@@ -162,8 +159,6 @@ int main(void) {
     // 이미지 파일을 읽고 픽셀 정보를 저장한다. 성공 여부를 file_status에 저장한다. 
     int file_status = load_image(file_name, image_rgb, image_hsv, &width, &height); 
 
-    const int edge_detection[3][3] = {{-1, -1, -1}, {-1, 8, -1}, {-1, -1, -1}}; // 에지 검출 필터를 저장한 2차원 배열을 선언한다.
-
     // 이미지 파일을 정상적으로 읽지 못했다면 에러 메시지를 출력하고 404 (not found) 를 반환하며 프로그램을 종료한다. 
     if (file_status == 0) { 
         printf("File not found: %s \n", file_name);
@@ -182,7 +177,6 @@ int main(void) {
         printf(" 3. Print Image \n");
         printf(" 4. Save Image \n");
         printf(" 5. Exit \n");
-        printf(" 6. Edge Detection \n");
         printf("Loaded file: %s \n", file_name);
         printf("\n");
 
@@ -191,12 +185,11 @@ int main(void) {
         while (1) { // 사용자가 valid한 메뉴 번호를 입력할 때까지 반복한다. 
             printf("Choose menu number >> ");
             scanf("%d", &menu);
-            if (within(menu, 1, 6)) break; // 사용자가 valid한 메뉴 번호를 입력했다면 반복을 종료한다. 
+            if (within(menu, 1, 5)) break; // 사용자가 valid한 메뉴 번호를 입력했다면 반복을 종료한다. 
             printf("Wrong input! \n"); // 그렇지 않다면 에러 메시지를 출력하고 다시 입력을 받는다. 
         }
 
         int source, target; // 사용자가 선택할 source 색조와 target 색조를 저장할 변수를 선언한다. 
-        int grey[SIZE][SIZE], edge[SIZE][SIZE];
         // Note that variables cannot be declared in switch-case statements in C. So, we declare them outside of the switch-case statement. 
 
         switch (menu) { // 사용자가 입력한 옵션에 따라 다음을 수행한다. 
@@ -219,10 +212,6 @@ int main(void) {
             case 5: // < 5. Exit >을 선택한 경우에는 
                 flag = 0; // flag를 0으로 설정하여 반복문을 탈출하고 프로그램을 종료한다. 
                 break; // 다음 case statement로 넘어가지 않기 위해 break한다. 
-            case 6: 
-                grey_scale(image_rgb, grey, width, height);
-                detect_edge(grey, edge, width, height);
-                break;
             default: // 처리되지 않은 예외가 발생한 경우
                 printf("Something went wrong! This exception is not handled. \n"); // 오류 메시지를 프린트한 뒤
                 return -500; // -500을 반환하며 프로그램을 종료한다. 
@@ -393,48 +382,6 @@ void hsv_to_rgb(float image_hsv[][SIZE][SIZE], int image_rgb[][SIZE][SIZE], int 
             dot_hsv_to_rgb(image_hsv[0][i][j], image_hsv[1][i][j], image_hsv[2][i][j], 
                 &image_rgb[0][i][j], &image_rgb[1][i][j], &image_rgb[2][i][j]);
         }
-    }
-}
-
-void grey_scale(int image_rgb[][SIZE][SIZE], int image_grey[][SIZE], int width, int height) {
-    // 반복문을 돌며 각 픽셀의 RGB 값을 이용하여 그레이스케일 값을 계산하고 저장한다. 
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            // RGB 값을 이용하여 그레이스케일 값을 계산하고 저장한다. 
-            image_grey[i][j] = (image_rgb[0][i][j] + image_rgb[1][i][j] + image_rgb[2][i][j]) / 3;
-        }
-    }
-}
-
-void detect_edge(int image_rgb[][SIZE], int result[][SIZE], int width, int height) {
-    // 반복문을 돌며 각 픽셀의 그레이스케일 값을 이용하여 엣지를 검출한다. 
-    int max = -1;
-    for (int i = 1; i < height - 1; i++) {
-        for (int j = 1; j < width - 1; j++) {
-            // Sobel filter를 이용하여 엣지를 검출한다. 
-            int gx = image_rgb[i - 1][j - 1] + 2 * image_rgb[i][j - 1] + image_rgb[i + 1][j - 1] - image_rgb[i - 1][j + 1] - 2 * image_rgb[i][j + 1] - image_rgb[i + 1][j + 1];
-            int gy = image_rgb[i - 1][j - 1] + 2 * image_rgb[i - 1][j] + image_rgb[i - 1][j + 1] - image_rgb[i + 1][j - 1] - 2 * image_rgb[i + 1][j] - image_rgb[i + 1][j + 1];
-            int g = sqrt(gx * gx + gy * gy);
-
-            // 계산된 그레이스케일 값을 저장한다. 
-            result[i][j] = (g > 500 ? 1000 : 0);
-            max = (max < g ? g : max);
-        }
-    }
-
-    printf("Edge detection is done.\n");
-    // 반복문을 돌며 이미지 각 픽셀을 '▇'로 출력한다. 
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            // 출력 색을 현재 픽셀의 RGB 값으로 설정한다. 
-            int r, g, b;
-            float h = 0, s = 0, v = (float) result[i][j] / max;
-            dot_hsv_to_rgb(h, s, v, &r, &g, &b);
-            set_color_rgb(r, g, b);
-            printf("▇"); // 픽셀 섹으로 '▇'를 출력한다.
-            reset_color(); // 출력 색을 기본 색으로 설정한다. 
-        }
-        printf("\n"); // 행이 끝나면 개행한다. 
     }
 }
 
