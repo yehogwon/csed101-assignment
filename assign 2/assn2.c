@@ -12,7 +12,7 @@
 
 // 필요한 헤더 파일을 include한다. 
 #include <stdio.h> // 표준 입출력 및 파일 입출력을 위한 헤더 파일
-#include <math.h> // fabsf() 함수와 fmod() 함수 사용을 위한 에더 파일
+#include <math.h> // fabs() 함수와 fabsf() 함수, fmod() 함수 사용을 위한 에더 파일
 
 #define SIZE 75 // 파일 이름의 최대 크기 및 사진 pixel 정보를 담는 배열의 width와 height의 최대 크기를 상수로 정의한다. 
 #define ERROR 1e-5 // float 비교에 사용할 오차의 tolerance를 상수로 정의한다. 
