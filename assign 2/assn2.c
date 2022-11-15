@@ -2,7 +2,7 @@
  * Author: 20220358 권예호 (Yeho Gwon)
  * Date: 2022.11.04
  * OS: macOS 13.0
- * IDE Environment: Visual Studio Code 1.73
+ * IDE Environment: Visual Studio Code 1.73.1
  * GCC version: gcc 14.0.0
  * C standard: C99
  * Encoding: UTF-8
@@ -321,7 +321,7 @@ void rgb_to_hsv(int image_rgb[][SIZE][SIZE], float image_hsv[][SIZE][SIZE], int 
 void dot_hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b) {
     /* 모든 변수의 이름은 pdf instruction을 따릅니다. */
     float c = v * s; // v와 s를 곱해 c를 구한다. 
-    float x = c * (1 - fabsf(fmod(h / 60.0, 2) - 1)); // 공식을 이용해 x를 구한다. 
+    float x = c * (1 - fabs(fmod(h / 60.0, 2) - 1)); // 공식을 이용해 x를 구한다. 
     float m = v - c; // v와 c의 차이로 m을 구한다. 
 
     float _r, _g, _b; // normalized r, g, b를 임시 저장할 변수를 선언한다. 
