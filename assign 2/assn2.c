@@ -5,7 +5,6 @@
  * IDE Environment: Visual Studio Code 1.73
  * GCC version: gcc 14.0.0
  * C standard: C99
- * Editor and Terminal Font: Consolas
  * Encoding: UTF-8
  * End of Line Sequence: LF
  * Naming Convention: snake_case
@@ -212,9 +211,6 @@ int main(void) {
             case 5: // < 5. Exit >을 선택한 경우에는 
                 flag = 0; // flag를 0으로 설정하여 반복문을 탈출하고 프로그램을 종료한다. 
                 break; // 다음 case statement로 넘어가지 않기 위해 break한다. 
-            default: // 처리되지 않은 예외가 발생한 경우
-                printf("Something went wrong! This exception is not handled. \n"); // 오류 메시지를 프린트한 뒤
-                return -500; // -500을 반환하며 프로그램을 종료한다. 
         }
     }
 
