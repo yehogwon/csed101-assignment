@@ -10,7 +10,6 @@
  * Naming Convention: snake_case
 */
 
-// FIXME: Follow the format of the array by the instructions. 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -65,6 +64,7 @@ int main(void) {
                 generate_ladder(ladder_board, n_people, height, n_line);
                 save_ladder(filename, ladder_board, n_people, height, n_line);
                 free_ladder(ladder_board, height);
+                break;
             case 2:
                 printf("파일이름: "); scanf("%s", filename);
                 
@@ -96,19 +96,22 @@ void clear() {
 
 int** allocate_ladder(int n_people, int height) {
     int **board = (int**)calloc(height, sizeof(int*)); // TODO: Use NULL end of array
-    for (int i = 0; i < height; i++) board[i] = (int*) calloc(n_people - 1, sizeof(int));
+    for (int i = 0; i < height; i++) board[i] = (int*) calloc(n_people * 2 - 1, sizeof(int));
     return board;
 }
 
+// TODO: Check if this function work for two players
 int check_adjacent(int *board_row, int n_people, int x) {
-    if (x == 0) return board_row[x + 1];
-    else if (x == n_people - 2) return board_row[x - 1];
-    else return board_row[x - 1] || board_row[x + 1];
+    if (x - 2 < 0) return board_row[x + 2];
+    else if (x + 2 > n_people * 2 - 2) return board_row[x - 2];
+    else return board_row[x - 2] || board_row[x + 2];
 }
 
 void generate_ladder(int **board, int n_people, int height, int n_line) {
+    for (int i = 0; i < height; i++) for (int j = 0; j < n_people * 2; j += 2) board[i][j] = 1;
+
     while (n_line--) {
-        int x = rand() % (n_people - 1);
+        int x = (rand() % (n_people - 1)) * 2 + 1;
         int y = 1 + rand() % (height - 2);
         if (board[y][x] == 1 || check_adjacent(board[y], n_people, x)) n_line++;
         else board[y][x] = 1;
@@ -124,8 +127,8 @@ void save_ladder(char filename[], int **board, int n_people, int height, int n_l
     FILE *fp = fopen(filename, "w");
     fprintf(fp, "%d %d %d\n", n_people, height, n_line);
     for (int i = 0; i < height; i++) {
-        for (int j = 0; j < n_people - 1; j++) {
-            if (board[i][j]) fprintf(fp, "%d %d\n", i, j);
+        for (int j = 1; j < n_people * 2; j += 2) {
+            if (board[i][j]) fprintf(fp, "%d %d\n", i, (j - 1) / 2);
         }
     }
     fclose(fp);
@@ -136,9 +139,12 @@ int** load_ladder(char *filename, int *n_people, int *height, int *n_line) {
     fscanf(fp, "%d %d %d", n_people, height, n_line);
 
     int **board = allocate_ladder(*n_people, *height);
+    for (int i = 0; i < *height; i++) for (int j = 0; j < *n_people * 2; j += 2) board[i][j] = 1;
     for (int i = 0; i < *n_line; i++) {
         int x, y;
         fscanf(fp, "%d %d", &y, &x);
-        board[y][x] = 1;
+        board[y][x * 2 + 1] = 1;
     }
+
+    return board;
 }
