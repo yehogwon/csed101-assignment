@@ -10,6 +10,7 @@
  * Naming Convention: snake_case
 */
 
+// FIXME: Follow the format of the array by the instructions. 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -31,7 +32,7 @@ void generate_ladder(int **board, int n_people, int height, int n_line);
 void free_ladder(int **board, int height);
 
 void save_ladder(char filename[], int **board, int n_people, int height, int n_line);
-int** load_ladder(char *filename);
+int** load_ladder(char *filename, int *n_people, int *height, int *n_line);
 
 int main(void) {
     srand(time(NULL));
@@ -65,6 +66,9 @@ int main(void) {
                 save_ladder(filename, ladder_board, n_people, height, n_line);
                 free_ladder(ladder_board, height);
             case 2:
+                printf("파일이름: "); scanf("%s", filename);
+                
+                ladder_board = load_ladder(filename, &n_people, &height, &n_line);
                 break;
             case 3:
                 flag = 0;
@@ -125,4 +129,16 @@ void save_ladder(char filename[], int **board, int n_people, int height, int n_l
         }
     }
     fclose(fp);
+}
+
+int** load_ladder(char *filename, int *n_people, int *height, int *n_line) {
+    FILE *fp = fopen(filename, "r");
+    fscanf(fp, "%d %d %d", n_people, height, n_line);
+
+    int **board = allocate_ladder(*n_people, *height);
+    for (int i = 0; i < *n_line; i++) {
+        int x, y;
+        fscanf(fp, "%d %d", &y, &x);
+        board[y][x] = 1;
+    }
 }
