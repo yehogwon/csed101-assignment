@@ -110,11 +110,9 @@ int** allocate_ladder(int n_people, int height) {
     return board;
 }
 
-// FIXME: Check if this function work for two players
 int check_adjacent(int *board_row, int n_people, int x) {
-    if (x - 2 < 0) return board_row[x + 2];
-    else if (x + 2 > n_people * 2 - 3) return board_row[x - 2];
-    else return board_row[x - 2] || board_row[x + 2];
+    if (n_people == 2) return 0;
+    else return (x - 2 >= 0 && board_row[x - 2]) || (x + 2 <= (n_people - 1) * 2 && board_row[x + 2]);
 }
 
 void generate_ladder(int **board, int n_people, int height, int n_line) {
