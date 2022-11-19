@@ -189,7 +189,7 @@ void show_ladder(int **board, int n_people, int height) {
     printf("\n");
 }
 
-// FIXME: there is a critical bug on coord-printing (associated with the above bug)
+// FIXME: Coord Error
 int navigate(int **board, int n_people, int height, int start, int print) {
     int mark = -start, x = (start - 1) * 2, y = height - 1;
     int vel = 0;
@@ -197,14 +197,14 @@ int navigate(int **board, int n_people, int height, int start, int print) {
     while (y >= 0) {
         board[y][x] = mark;
 
-        if (x % 2 != 0) { // 사이에 있어
+        if (x % 2 != 0) {
             x += vel;
-        } else { // 길이야
-            if (vel != 0) { // 방금 옆으로 움직였으면 직진
+        } else {
+            if (vel != 0) {
                 y--;
                 vel = 0;
             }
-            else { // 아니라면 길 찾아보기
+            else {
                 if (x > 0 && board[y][x - 1]) x += (vel = -1);
                 else if (x + 1 < n_people * 2 - 1 && board[y][x + 1]) x += (vel = 1);
                 else y--;
@@ -213,9 +213,9 @@ int navigate(int **board, int n_people, int height, int start, int print) {
         
         if (print) {
             clear();
-            // printf("%d %d \n", y + 1, x);
+            printf("%d %d \n", y + 1, x);
             show_ladder(board, n_people, height);
-            getchar();
+            getchar(); // FIXME: The destination should be printed as soon as it reaches the destination without any hestitation
         }
     }
 
