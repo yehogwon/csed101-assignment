@@ -189,12 +189,12 @@ void show_ladder(int **board, int n_people, int height) {
     printf("\n");
 }
 
-// FIXME: Coord Error
 int navigate(int **board, int n_people, int height, int start, int print) {
     int mark = -start, x = (start - 1) * 2, y = height - 1;
-    int vel = 0;
+    int vel = 0, prev_x = x, prev_y = y;
     
     while (y >= 0) {
+        prev_x = x, prev_y = y;
         board[y][x] = mark;
 
         if (x % 2 != 0) {
@@ -213,9 +213,9 @@ int navigate(int **board, int n_people, int height, int start, int print) {
         
         if (print) {
             clear();
-            printf("%d %d \n", y + 1, x);
+            printf("%d %d \n", prev_y, prev_x);
             show_ladder(board, n_people, height);
-            getchar(); // FIXME: The destination should be printed as soon as it reaches the destination without any hestitation
+            if (prev_y) getchar();
         }
     }
 
