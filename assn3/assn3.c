@@ -10,8 +10,6 @@
  * Naming Convention: snake_case
 */
 
-// TODO: Match the format of printing to the sample output in the instruction
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -54,6 +52,7 @@ int main(void) {
 
         int menu, start;
         scanf("%d", &menu);
+        printf("\n");
 
         switch(menu) {
             case 1: 
@@ -239,11 +238,15 @@ void iterate_navigate(int **board, int n_people, int height) {
                 clear();
                 for (int i = 0; i < n_people; i++) dest[i] = navigate(board, n_people, height, i + 1, 0);
                 show_ladder(board, n_people, height);
+                printf("\n");
                 for (int i = 0; i < n_people; i++) printf("%d -> %c \n", i + 1, 'A' + dest[i] - 1);
+                printf("\n");
                 break;
             default: 
                 dest[start - 1] = navigate(board, n_people, height, start, 1);
+                printf("\n");
                 printf("result: %d -> %c \n", start, 'A' + dest[start - 1] - 1);
+                printf("\n");
                 break;
         }
     }
