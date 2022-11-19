@@ -14,8 +14,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-// 빨간색 91 연두색 92 노란색 93 파란색 94 자주색 95
-
 // Print Utils
 void set_color(int code);
 void reset_color();
@@ -31,7 +29,7 @@ void save_ladder(char filename[], int **board, int n_people, int height, int n_l
 int** load_ladder(char *filename, int *n_people, int *height, int *n_line);
 
 void show_ladder(int **board, int n_people, int height);
-void navigate(int **board, int n_people, int height, int start, int print);
+int navigate(int **board, int n_people, int height, int start, int print);
 void iterate_navigate(int **board, int n_people, int height);
 
 int main(void) {
@@ -70,7 +68,6 @@ int main(void) {
                 printf("파일이름: "); scanf("%s", filename);
                 
                 ladder_board = load_ladder(filename, &n_people, &height, &n_line);
-                // show_ladder(ladder_board, n_people, height);
                 iterate_navigate(ladder_board, n_people, height);
 
                 free_ladder(ladder_board, height);
@@ -113,7 +110,7 @@ int** allocate_ladder(int n_people, int height) {
     return board;
 }
 
-// TODO: Check if this function work for two players
+// FIXME: Check if this function work for two players
 int check_adjacent(int *board_row, int n_people, int x) {
     if (x - 2 < 0) return board_row[x + 2];
     else if (x + 2 > n_people * 2 - 3) return board_row[x - 2];
@@ -181,8 +178,7 @@ void show_ladder(int **board, int n_people, int height) {
     printf("\n");
 }
 
-// 빈칸은 0, 있는건 1, 플레이어의 색은 (-1) ~  (-n_people) 로 저장
-void navigate(int **board, int n_people, int height, int start, int print) {
+int navigate(int **board, int n_people, int height, int start, int print) {
     int x = start * 2 - 2;
     int y = height;
     
@@ -209,11 +205,28 @@ void navigate(int **board, int n_people, int height, int start, int print) {
             getchar();
         }
     }
+
+    return x / 2 + 1;
 }
 
 void iterate_navigate(int **board, int n_people, int height) {
-    for (int i = 0; i < n_people; i++) {
-        navigate(board, n_people, height, i + 1, 0);
-    }
     show_ladder(board, n_people, height);
+    
+    int flag = 1, start, dest;
+    while (flag) {
+        printf(">> "); scanf("%d", &start);
+        switch (start) {
+            case 0: 
+                flag = 0;
+                break;
+            case -1: 
+                for (int i = 1; i <= n_people; i++) navigate(board, n_people, height, i, 0);
+                show_ladder(board, n_people, height);
+                break;
+            default: 
+                dest = navigate(board, n_people, height, start, 1);
+                printf("result: %d -> %c \n", start, 'A' + dest - 1);
+                break;
+        }
+    }
 }
