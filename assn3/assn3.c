@@ -25,7 +25,7 @@ int check_adjacent(int *board_row, int n_people, int x);
 void generate_ladder(int **board, int n_people, int height, int n_line);
 void free_ladder(int **board, int height);
 
-void save_ladder(char filename[], int **board, int n_people, int height, int n_line);
+void save_ladder(char *filename, int **board, int n_people, int height, int n_line);
 int** load_ladder(char *filename, int *n_people, int *height, int *n_line);
 
 void show_ladder(int **board, int n_people, int height);
@@ -133,7 +133,7 @@ void free_ladder(int **board, int height) {
     free(board);
 }
 
-void save_ladder(char filename[], int **board, int n_people, int height, int n_line) {
+void save_ladder(char *filename, int **board, int n_people, int height, int n_line) {
     FILE *fp = fopen(filename, "w");
     fprintf(fp, "%d %d %d\n", n_people, height, n_line);
     for (int i = 0; i < height; i++) {
