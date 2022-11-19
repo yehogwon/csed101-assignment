@@ -10,6 +10,8 @@
  * Naming Convention: snake_case
 */
 
+// TODO: Match the format of printing to the sample output in the instruction
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -158,7 +160,6 @@ int** load_ladder(char *filename, int *n_people, int *height, int *n_line) {
 }
 
 void show_ladder(int **board, int n_people, int height) {
-    clear();
     for (int i = 0; i < n_people; i++) printf("%3c ", 'A' + i);
     printf("\n");
 
@@ -176,6 +177,8 @@ void show_ladder(int **board, int n_people, int height) {
     printf("\n");
 }
 
+// FIXME: sometimes it skips a step of navigation (coloring)
+// FIXME: there is a critical bug on coord-printing (associated with the above bug)
 int navigate(int **board, int n_people, int height, int start, int print) {
     int x = start * 2 - 2;
     int y = height;
@@ -198,7 +201,8 @@ int navigate(int **board, int n_people, int height, int start, int print) {
         }
         
         if (print) {
-            printf("%d %d \n", y, x);
+            clear();
+            printf("%d %d \n", y + 1, x);
             show_ladder(board, n_people, height);
             getchar();
         }
@@ -208,9 +212,11 @@ int navigate(int **board, int n_people, int height, int start, int print) {
 }
 
 void iterate_navigate(int **board, int n_people, int height) {
+    clear();
     show_ladder(board, n_people, height);
     
-    int flag = 1, start, dest;
+    int flag = 1, start;
+    int *dest = (int*)calloc(n_people, sizeof(int));
     while (flag) {
         printf(">> "); scanf("%d", &start);
         switch (start) {
@@ -218,13 +224,16 @@ void iterate_navigate(int **board, int n_people, int height) {
                 flag = 0;
                 break;
             case -1: 
-                for (int i = 1; i <= n_people; i++) navigate(board, n_people, height, i, 0);
+                clear();
+                for (int i = 0; i < n_people; i++) dest[i] = navigate(board, n_people, height, i + 1, 0);
                 show_ladder(board, n_people, height);
+                for (int i = 0; i < n_people; i++) printf("%d -> %c \n", i + 1, 'A' + dest[i] - 1);
                 break;
             default: 
-                dest = navigate(board, n_people, height, start, 1);
-                printf("result: %d -> %c \n", start, 'A' + dest - 1);
+                dest[start - 1] = navigate(board, n_people, height, start, 1);
+                printf("result: %d -> %c \n", start, 'A' + dest[start - 1] - 1);
                 break;
         }
     }
+    free(dest);
 }
