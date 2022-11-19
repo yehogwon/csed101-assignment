@@ -70,9 +70,10 @@ int main(void) {
                 printf("파일이름: "); scanf("%s", filename);
                 
                 ladder_board = load_ladder(filename, &n_people, &height, &n_line);
-                iterate_navigate(ladder_board, n_people, height);
-
-                free_ladder(ladder_board, height);
+                if (ladder_board) {
+                    iterate_navigate(ladder_board, n_people, height);
+                    free_ladder(ladder_board, height);
+                }
                 break;
             case 3:
                 flag = 0;
@@ -146,6 +147,11 @@ void save_ladder(char *filename, int **board, int n_people, int height, int n_li
 
 int** load_ladder(char *filename, int *n_people, int *height, int *n_line) {
     FILE *fp = fopen(filename, "r");
+    if (fp == NULL) {
+        printf("파일이 존재하지 않습니다. \n");
+        return NULL;
+    }
+    
     fscanf(fp, "%d %d %d", n_people, height, n_line);
 
     int **board = allocate_ladder(*n_people, *height);
@@ -155,7 +161,8 @@ int** load_ladder(char *filename, int *n_people, int *height, int *n_line) {
         fscanf(fp, "%d %d", &y, &x);
         board[y][x * 2 + 1] = 1;
     }
-
+    
+    fclose(fp);
     return board;
 }
 
