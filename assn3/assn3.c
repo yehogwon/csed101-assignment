@@ -21,6 +21,7 @@ void set_color(int code);
 void reset_color();
 void print_color(char *str, int code);
 void clear();
+void flush();
 
 int** allocate_ladder(int n_people, int height);
 int check_adjacent(int *board_row, int n_people, int x);
@@ -73,7 +74,7 @@ int main(void) {
                 if (ladder_board) {
                     iterate_navigate(ladder_board, n_people, height);
                     free_ladder(ladder_board, height);
-                }
+                } else printf("파일이 존재하지 않습니다. ");
                 break;
             case 3:
                 flag = 0;
@@ -105,6 +106,11 @@ void print_color(char *str, int code) {
 
 void clear() {
     system("clear");
+}
+
+void flush() {
+    char c;
+    while ((c = getchar()) != '\n' && c != EOF);
 }
 
 int** allocate_ladder(int n_people, int height) {
@@ -148,7 +154,6 @@ void save_ladder(char *filename, int **board, int n_people, int height, int n_li
 int** load_ladder(char *filename, int *n_people, int *height, int *n_line) {
     FILE *fp = fopen(filename, "r");
     if (fp == NULL) {
-        printf("파일이 존재하지 않습니다. \n");
         return NULL;
     }
     
@@ -184,32 +189,31 @@ void show_ladder(int **board, int n_people, int height) {
     printf("\n");
 }
 
-// FIXME: sometimes it skips a step of navigation (coloring)
 // FIXME: there is a critical bug on coord-printing (associated with the above bug)
 int navigate(int **board, int n_people, int height, int start, int print) {
-    int x = start * 2 - 2;
-    int y = height;
-    
+    int mark = -start, x = (start - 1) * 2, y = height - 1;
     int vel = 0;
-    while (y-- > 0) {
-        board[y][x] = -start;
+    
+    while (y >= 0) {
+        board[y][x] = mark;
 
-        if (x % 2 != 0) {
+        if (x % 2 != 0) { // 사이에 있어
             x += vel;
-            vel = 0;
-            board[y][x] = -start;
-        } else {
-            if (x > 0 && board[y][x - 1]) vel = -1;
-            else if (x + 1 < n_people * 2 - 1 && board[y][x + 1]) vel = 1;
-            if (vel != 0) {
-                x += vel;
-                y++;
+        } else { // 길이야
+            if (vel != 0) { // 방금 옆으로 움직였으면 직진
+                y--;
+                vel = 0;
+            }
+            else { // 아니라면 길 찾아보기
+                if (x > 0 && board[y][x - 1]) x += (vel = -1);
+                else if (x + 1 < n_people * 2 - 1 && board[y][x + 1]) x += (vel = 1);
+                else y--;
             }
         }
         
         if (print) {
             clear();
-            printf("%d %d \n", y + 1, x);
+            // printf("%d %d \n", y + 1, x);
             show_ladder(board, n_people, height);
             getchar();
         }
@@ -226,6 +230,7 @@ void iterate_navigate(int **board, int n_people, int height) {
     int *dest = (int*)calloc(n_people, sizeof(int));
     while (flag) {
         printf(">> "); scanf("%d", &start);
+        flush();
         switch (start) {
             case 0: 
                 flag = 0;
