@@ -14,23 +14,125 @@
 #include <stdlib.h>
 #include <time.h>
 
-// Print Utils
-void set_color(int code);
+/**
+ * printf의 색을 설정하는 함수
+ * 매개변수 color: 색상 코드 (printf format)
+ * 리턴값: 없음
+*/
+void set_color(int color);
+
+/**
+ * printf의 색을 초기화하는 함수
+ * 매개변수: 없음
+ * 리턴값: 없음
+*/
 void reset_color();
+
+/**
+ * 주어진 색상 코드에 따라 적절하게 주어진 문자열을 출력하는 함수
+ * 매개변수 str: 출력할 문자열
+ * 매개변수 code: 출력할 색상 코드 (함수에서 디코딩 됨)
+ * 리턴값: 없음
+*/
 void print_color(char *str, int code);
+
+/**
+ * 화면을 지우는 함수
+ * 매개변수: 없음
+ * 리턴값: 없음
+*/
 void clear();
+
+/**
+ * scanf의 stdin 버퍼를 지우는 함수
+ * 매개변수: 없음
+ * 리턴값: 없음
+*/
 void flush();
 
+/**
+ * 사다리 정보를 저장할 변수의 공간을 할당하는 함수
+ * 매개변수 n_people: 사다리 타기에 참여한 사람 수
+ * 매개변수 height: 사다리의 높이
+ * 리턴값: 할당된 공간을 가리키는 이중포인터 (2차원 배열)
+*/
 int** allocate_ladder(int n_people, int height);
+
+/**
+ * 사다리의 한 행이 주어질 때 이웃하는 위치에 가로 선이 존재하는지 확인하는 함수
+ * 매개변수 board_row: 사다리의 한 행
+ * 매개변수 n_line: 사다리의 가로 선 개수
+ * 매개변수 x: 이웃 여부를 확인할 x좌표
+ * 리턴값: 이웃한다 (1 ; true), 이웃하지 않는다 (0 ; false)
+*/
 int check_adjacent(int *board_row, int n_people, int x);
+
+/**
+ * 주어진 공간에 주어진 정보의 임의의 사다리를 만들고 저장하는 함수
+ * 매개변수 board: 사다리 정보를 저장할 변수 (2차원 배열)
+ * 매개변수 n_people: 사다리 타기에 참여한 사람 수
+ * 매개변수 height: 사다리의 높이
+ * 매개변수 n_line: 사다리의 가로 선 개수
+ * 리턴값: 없음
+*/
 void generate_ladder(int **board, int n_people, int height, int n_line);
+
+/**
+ * 사다리를 저장하기 위해 할당된 공간을 해제하는 함수
+ * 매개변수 board: 사다리 정보가 저장된 공간 (2차원 배열)
+ * 매개변수 height: 사다리의 높이
+ * 리턴값: 없음
+*/
 void free_ladder(int **board, int height);
 
+/**
+ * 사다리 정보를 파일에 저장하는 함수
+ * 매개변수 filename: 저장할 파일 이름
+ * 매개변수 board: 사다리 정보가 저장된 변수 (2차원 배열)
+ * 매개변수 n_people: 사다리 타기에 참여한 사람 수
+ * 매개변수 height: 사다리의 높이
+ * 매개변수 n_line: 사다리의 가로 선 개수
+ * 리턴값: 없음
+*/
 void save_ladder(char *filename, int **board, int n_people, int height, int n_line);
+
+/**
+ * 파일에서 사다리 정보를 읽어 저장하는 함수
+ * 매개변수 filename: 읽어올 파일 이름
+ * 매개변수 n_people: 사다리 타기에 참여한 사람 수를 저장할 변수
+ * 매개변수 height: 사다리의 높이를 저장할 변수
+ * 매개변수 n_line: 사다리의 가로 선 개수를 저장할 변수
+ * 리턴값: 사다리 정보를 저장할 2차원 배열 공간
+*/
 int** load_ladder(char *filename, int *n_people, int *height, int *n_line);
 
+/**
+ * 사다리를 출력하는 함수 (0 또는 1이 아니라면 적당한 색으로 출력)
+ * 매개변수 board: 사다리 정보가 저장된 변수 (2차원 배열)
+ * 매개변수 n_people: 사다리 타기에 참여한 사람 수
+ * 매개변수 height: 사다리의 높이
+ * 리턴값: 없음
+*/
 void show_ladder(int **board, int n_people, int height);
+
+/**
+ * 주어진 시작점부터 사다리를 타고 올라가는 함수
+ * 매개변수 board: 사다리 정보가 저장된 변수 (2차원 배열)
+ * 매개변수 n_people: 사다리 타기에 참여한 사람 수
+ * 매개변수 height: 사다리의 높이
+ * 매개변수 start: 사다리를 타기 시작할 위치 (1 ~ n_people)
+ * 매개변수 print: 사다리를 타는 과정을 출력할지 여부
+ * 리턴값: 사다리의 목적지 (1 ~ n_people)
+*/
 int navigate(int **board, int n_people, int height, int start, int print);
+
+/**
+ * 사용자와 상호작용하며 반복적으로 사다리 타기를 진행하는 함수
+ * 매개변수 board: 사다리 정보가 저장된 변수 (2차원 배열)
+ * 매개변수 n_people: 사다리 타기에 참여한 사람 수
+ * 매개변수 height: 사다리의 높이
+ * 리턴값: 없음
+*/
 void iterate_navigate(int **board, int n_people, int height);
 
 int main(void) {
@@ -87,8 +189,8 @@ int main(void) {
     return 0;
 }
 
-void set_color(int code) {
-    printf("\033[%dm", code);
+void set_color(int color) {
+    printf("\033[%dm", color);
 }
 
 void reset_color() {
