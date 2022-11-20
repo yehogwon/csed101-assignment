@@ -113,7 +113,7 @@ void flush() {
 }
 
 int** allocate_ladder(int n_people, int height) {
-    int **board = (int**)calloc(height, sizeof(int*)); // TODO: Use NULL end of array
+    int **board = (int**)calloc(height, sizeof(int*));
     for (int i = 0; i < height; i++) board[i] = (int*) calloc(n_people * 2 - 1, sizeof(int));
     return board;
 }
