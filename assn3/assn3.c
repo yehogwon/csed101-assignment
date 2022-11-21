@@ -136,14 +136,15 @@ int navigate(int **board, int n_people, int height, int start, int print);
 void iterate_navigate(int **board, int n_people, int height);
 
 int main(void) {
-    srand(time(NULL));
+    srand(time(NULL)); // 난수 생성을 위한 시드를 현재 시간으로 설정한다. 
 
-    int **ladder_board = NULL;
-    int n_people, height, n_line;
-    char filename[25];
+    int **ladder_board = NULL; // 사다리 정보를 저장할 2차원 배열을 선언한다. 
+    int n_people, height, n_line; // 사다리 타기에 참여한 사람 수, 사다리의 높이, 사다리의 가로 선 개수를 저장할 변수를 선언한다.
+    char filename[25]; // 사다리의 정보를 저장하거나 불러올 파일 이름을 저장할 변수를 선언한다. 최대 길이가 20이므로 넉넉하게 25로 설정한다. 
 
-    int flag = 1;
+    int flag = 1; // 반복을 제어할 flag를 선언하고, 처음에는 반복하므로 1로 초기화한다. 
     while (flag) {
+        // 사용자가 선택할 수 있는 메뉴를 출력한다. 
         printf("[사다리 게임] \n");
         printf("======================================= \n");
         printf("1. 사다리 보드 생성 \n");
@@ -152,36 +153,35 @@ int main(void) {
         printf("======================================= \n");
         printf("선택: ");
 
+        // 사용자의 메뉴 선택을 받는다. 
         int menu, start;
         scanf("%d", &menu);
         printf("\n");
-
+        
         switch(menu) {
-            case 1: 
+            case 1: // 사용자가 < 1. 사다리 보드 생성 >을 선택한 경우
+                // 사용자에게 사다리 타기에 참여할 사람 수, 사다리의 높이, 가로줄의 개수, 저장할 파일 이름을 입력받는다. 
                 printf("참여 인원수: "); scanf("%d", &n_people);
                 printf("사다리 높이: "); scanf("%d", &height);
                 printf("가로줄 개수: "); scanf("%d", &n_line);
                 printf("파일이름: "); scanf("%s", filename);
 
-                ladder_board = allocate_ladder(n_people, height);
-                generate_ladder(ladder_board, n_people, height, n_line);
-                save_ladder(filename, ladder_board, n_people, height, n_line);
-                free_ladder(ladder_board, height);
+                ladder_board = allocate_ladder(n_people, height); // 사다리를 저장할 메모리 공간을 동적할당한다. 
+                generate_ladder(ladder_board, n_people, height, n_line); // 사다리를 무작위로 생성한다. 
+                save_ladder(filename, ladder_board, n_people, height, n_line); // 파일에 사다리 정보를 저장한다. 
+                free_ladder(ladder_board, height); // 사다리를 저장하기 위해 동적할당한 메모리 공간을 해제한다. 
                 break;
-            case 2:
-                printf("파일이름: "); scanf("%s", filename);
+            case 2: // 사용자가 < 2. 사다리 타기 시작 >을 선택한 경우
+                printf("파일이름: "); scanf("%s", filename); // 사다리를 불러올 파일 이름을 입력받는다. 
                 
-                ladder_board = load_ladder(filename, &n_people, &height, &n_line);
-                if (ladder_board) {
-                    iterate_navigate(ladder_board, n_people, height);
-                    free_ladder(ladder_board, height);
-                } else printf("파일이 존재하지 않습니다. ");
+                ladder_board = load_ladder(filename, &n_people, &height, &n_line); // 파일에서 사다리 정보를 불러온다. 
+                if (ladder_board) { // 사다리 정보를 불러오는데 성공한 경우
+                    iterate_navigate(ladder_board, n_people, height); // 사용자와 상호작용하며 사다리 타기를 진행한다. 
+                    free_ladder(ladder_board, height); // 사다리를 저장하기 위해 동적할당한 메모리 공간을 해제한다. 
+                } else printf("파일이 존재하지 않습니다. "); // 사다리 정보를 불러오는데 실패한 경우 (파일이 존재하지 않는 경우)
                 break;
-            case 3:
-                flag = 0;
-                break;
-            default:
-                printf("Uncaught Exception! \n");
+            case 3: // 사용자가 < 3. 종료 >를 선택한 경우
+                flag = 0; // 반복을 종료하기 위해 flag를 0으로 설정한다. 
                 break;
         }
     }
@@ -258,7 +258,7 @@ void save_ladder(char *filename, int **board, int n_people, int height, int n_li
 
 int** load_ladder(char *filename, int *n_people, int *height, int *n_line) {
     FILE *fp = fopen(filename, "r"); // 파일을 읽기 모드로 열고, 파일 포인터를 얻는다. 
-    if (fp == NULL) return NULL; // 파일이 존재하지 않으면 DNE의 신호로 NULL을 반환한다. 
+    if (fp == NULL) return NULL; // 파일이 존재하지 않으면 FILE DOES NOT EXIST의 신호로 NULL을 반환한다. 
     
     fscanf(fp, "%d %d %d", n_people, height, n_line); // 첫 번째 줄에 있는 사다리의 정보를 읽는다. 
 
