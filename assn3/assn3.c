@@ -190,102 +190,108 @@ int main(void) {
 }
 
 void set_color(int color) {
-    printf("\033[%dm", color);
+    printf("\033[%dm", color); // 주어진 색으로 printf 색상 변경
 }
 
 void reset_color() {
-    printf("\033[0m");
+    printf("\033[0m"); // printf 출력 색상 초기화
 }
 
 void print_color(char *str, int code) {
-    int color = code < 0 ? 90 - (code) % 5 : 0;
-    if (color == 90) color = 95;
-    set_color(color);
-    printf("%s", str);
-    reset_color();
+    // 코드가 음수라면 플레이어의 색을, 아니라면 기본 색을 의미한다. 
+    int color = code < 0 ? 90 - (code) % 5 : 0; // 위 logic에 따라 색을 디코딩한다. 
+    if (color == 90) color = 95; // 색이 90으로 디코드되었을 때는 violet을 의미하는 예외이므로 95로 바꿔준다. 
+    set_color(color); // 디코딩한 색으로 printf 색을 변경한다.
+    printf("%s", str); // 문자열을 출력한다. 
+    reset_color(); // printf 색을 초기화한다. 
 }
 
 void clear() {
-    system("clear");
+    system("clear"); // 화면을 모두 지운다. (macOS에서 build 및 실행하여 clear를 사용했습니다. )
 }
 
 void flush() {
-    char c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    char c; // 입력 버퍼를 임시 저장할 변수
+    while ((c = getchar()) != '\n' && c != EOF); // 입력 버퍼를 비운다.
 }
 
 int** allocate_ladder(int n_people, int height) {
-    int **board = (int**)calloc(height, sizeof(int*));
-    for (int i = 0; i < height; i++) board[i] = (int*) calloc(n_people * 2 - 1, sizeof(int));
-    return board;
+    int **board = (int**)calloc(height, sizeof(int*)); // 각 행을 저장할 포인터 배열을 동적 할당한다. 
+    for (int i = 0; i < height; i++) board[i] = (int*) calloc(n_people * 2 - 1, sizeof(int)); // 각 행에 사다리 정보를 저장할 배열을 동적 할당한다. 
+    return board; // 할당된 공간의 포인터를 반환한다. 
 }
 
+// TODO: Check if this function is working properly. 
 int check_adjacent(int *board_row, int n_people, int x) {
-    if (n_people == 2) return 0;
-    else return (x - 2 >= 0 && board_row[x - 2]) || (x + 2 <= (n_people - 1) * 2 && board_row[x + 2]);
+    if (n_people == 2) return 0; // 플레이어가 두 명이면 이웃하는 경우는 고려하지 않는다. 
+    else return (x - 2 >= 0 && board_row[x - 2]) || (x + 2 <= (n_people - 1) * 2 && board_row[x + 2]); // 왼쪽 끝이 아닐때는 왼쪽을 확인, 오른쪽 끝이 아닐때는 오른쪽을 확인한다. 
 }
 
 void generate_ladder(int **board, int n_people, int height, int n_line) {
-    for (int i = 0; i < height; i++) for (int j = 0; j < n_people * 2; j += 2) board[i][j] = 1;
-
+    for (int i = 0; i < height; i++) for (int j = 0; j < n_people * 2; j += 2) board[i][j] = 1; // 세로줄을 그릴 수 있는 공간을 1로 초기화한다. 
+    
+    // 추가해야 하는 선의 개수만큼 반복한다. 
     while (n_line--) {
-        int x = (rand() % (n_people - 1)) * 2 + 1;
-        int y = 1 + rand() % (height - 2);
-        if (board[y][x] || check_adjacent(board[y], n_people, x)) n_line++;
-        else board[y][x] = 1;
+        int x = (rand() % (n_people - 1)) * 2 + 1; // x 좌표는 무작위로 1, 3, 5, ... (n_people - 1) * 2 - 1 중 하나가 된다. 
+        int y = 1 + rand() % (height - 2); // y 좌표는 무작위로 1, 2, 3, ... height - 2 중 하나가 된다. 
+        if (board[y][x] || check_adjacent(board[y], n_people, x)) n_line++; // 이미 선이 그어져 있거나, 이웃하는 경우는 다시 뽑는다. 
+        else board[y][x] = 1; // 가로 선을 그릴 수 있다면 그린다. 
     }
 }
 
 void free_ladder(int **board, int height) {
-    for (int i = 0; i < height; i++) free(board[i]);
-    free(board);
+    for (int i = 0; i < height; i++) free(board[i]); // 각 행에 대해 할당된 메모리를 해제한다. 
+    free(board); // 포인터 배열에 대해 할당된 메모리를 해제한다. 
 }
 
 void save_ladder(char *filename, int **board, int n_people, int height, int n_line) {
-    FILE *fp = fopen(filename, "w");
-    fprintf(fp, "%d %d %d\n", n_people, height, n_line);
+    FILE *fp = fopen(filename, "w"); // 파일을 쓰기 모드로 열고, 파일 포인터를 얻는다. 
+    fprintf(fp, "%d %d %d\n", n_people, height, n_line); // 첫 줄에 플레이어 수, 사다리 높이, 가로 선의 개수를 저장한다.
+    // 배열의 모든 가로 선 후보 위치 (모든 행, 홀수 열)에 대해 반복한다. 
     for (int i = 0; i < height; i++) {
         for (int j = 1; j < n_people * 2; j += 2) {
-            if (board[i][j]) fprintf(fp, "%d %d\n", i, (j - 1) / 2);
+            if (board[i][j]) fprintf(fp, "%d %d\n", i, (j - 1) / 2); // 가로 선이 있다면 현재 위치를 파일에 저장한다. 
         }
     }
-    fclose(fp);
+    fclose(fp); // 파일 포인터를 닫는다. 
 }
 
 int** load_ladder(char *filename, int *n_people, int *height, int *n_line) {
-    FILE *fp = fopen(filename, "r");
-    if (fp == NULL) {
-        return NULL;
-    }
+    FILE *fp = fopen(filename, "r"); // 파일을 읽기 모드로 열고, 파일 포인터를 얻는다. 
+    if (fp == NULL) return NULL; // 파일이 존재하지 않으면 DNE의 신호로 NULL을 반환한다. 
     
-    fscanf(fp, "%d %d %d", n_people, height, n_line);
+    fscanf(fp, "%d %d %d", n_people, height, n_line); // 첫 번째 줄에 있는 사다리의 정보를 읽는다. 
 
-    int **board = allocate_ladder(*n_people, *height);
-    for (int i = 0; i < *height; i++) for (int j = 0; j < *n_people * 2; j += 2) board[i][j] = 1;
-    for (int i = 0; i < *n_line; i++) {
+    int **board = allocate_ladder(*n_people, *height); // 사다리를 저장할 메모리를 적절하게 할당한다. 
+    for (int i = 0; i < *height; i++) for (int j = 0; j < *n_people * 2; j += 2) board[i][j] = 1; // 세로 선을 그을 수 있는 모든 곳에 1을 표시한다. 
+    for (int i = 0; i < *n_line; i++) { // 저장되어 있는 가로 선의 개수만큼 반복한다. 
         int x, y;
-        fscanf(fp, "%d %d", &y, &x);
-        board[y][x * 2 + 1] = 1;
+        fscanf(fp, "%d %d", &y, &x); // 가로 선의 위치를 읽는다. 
+        board[y][x * 2 + 1] = 1; // 가로 선이 그어진 곳에 1을 표시한다. 
     }
     
-    fclose(fp);
-    return board;
+    fclose(fp); // 파일 포인터를 닫는다. 
+    return board; // 사다리가 저장된 공간의 포인터를 반환한다. 
 }
 
 void show_ladder(int **board, int n_people, int height) {
+    // 목적지를 가로로 출력한다. 
     for (int i = 0; i < n_people; i++) printf("%3c ", 'A' + i);
     printf("\n");
 
+    // 사다리를 출력한다. 
     for (int i = 0; i < height; i++) {
-        printf("  ");
+        printf("  "); // 각 행의 시작 부분에 공백을 맞춘다. 
         for (int j = 0; j < n_people * 2 - 1; j++) {
-            if (j % 2 == 0) print_color("+", board[i][j]);
-            else if (board[i][j] != 0) print_color("---", board[i][j]);
-            else print_color("   ", board[i][j]);
+            // 아래 프린트는 모두 printf가 아닌 print_color()를 이용해 색을 포함하여 출력한다. 
+            if (j % 2 == 0) print_color("+", board[i][j]); // 세로 선 부분에는 + 기호를 프린트한다. 
+            else if (board[i][j] != 0) print_color("---", board[i][j]); // 가로 선 부분에는 --- 기호를 프린트한다. 
+            else print_color("   ", board[i][j]); // 모두 아닌 경우에는 공백을 프린트한다. 
         }
-        printf("\n");
+        printf("\n"); // 각 행의 출력이 끝날때마다 개행한다. 
     }
 
+    // 시작점 (사람 번호)를 가로로 출력한다. 
     for (int i = 0; i < n_people; i++) printf("%3d ", i + 1);
     printf("\n");
 }
