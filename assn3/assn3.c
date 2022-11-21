@@ -297,66 +297,66 @@ void show_ladder(int **board, int n_people, int height) {
 }
 
 int navigate(int **board, int n_people, int height, int start, int print) {
-    int mark = -start, x = (start - 1) * 2, y = height - 1;
-    int vel = 0, prev_x = x, prev_y = y;
+    int mark = -start, x = (start - 1) * 2, y = height - 1; // trace를 
+    int vel = 0, prev_x = x, prev_y = y; // 현재 가로로 움직이는 속도 (vel)와 이전 위치 (prev_x, prev_y)를 선언 및 초기화한다. 
     
-    while (y >= 0) {
-        prev_x = x, prev_y = y;
-        board[y][x] = mark;
+    while (y >= 0) { // 사다리의 맨 위에 도달할 때까지 반복한다. 
+        prev_x = x, prev_y = y; // 이전 위치를 저장한다. 
+        board[y][x] = mark; // 현재 도달한 위치를 현재 플레이어의 색으로 표시한다. 
 
-        if (x % 2 != 0) {
-            x += vel;
-        } else {
-            if (vel != 0) {
-                y--;
-                vel = 0;
+        if (x % 2 != 0) { // 현재 위치가 가로 선이라면
+            x += vel; // 이전에 움직이던 방향으로 가로로 계속 움직인다. 
+        } else { // 현재 위치가 세로 선이라면
+            if (vel != 0) { // 이전 step에 가로로 움직였다면
+                y--; // 한 칸 위로 움직이고
+                vel = 0; // 가로 속도를 0으로 초기화한다. 
             }
-            else {
-                if (x > 0 && board[y][x - 1]) x += (vel = -1);
-                else if (x + 1 < n_people * 2 - 1 && board[y][x + 1]) x += (vel = 1);
-                else y--;
+            else { // 이전 step에 가로로 움직이지 않았다면
+                if (x > 0 && board[y][x - 1]) x += (vel = -1); // 왼쪽으로 움직일 수 있는지 확인하고, 가능하다면 움직인다. 
+                else if (x + 1 < n_people * 2 - 1 && board[y][x + 1]) x += (vel = 1); // 오른쪽으로 움직일 수 있는지 확인하고, 가능하다면 움직인다. 
+                else y--; // 모두 아니라면 그냥 한 칸 위로 움직인다. 
             }
         }
         
-        if (print) {
-            clear();
-            printf("%d %d \n", prev_y, prev_x);
-            show_ladder(board, n_people, height);
-            if (prev_y) getchar();
+        if (print) { // navigation 과정을 출력하도록 설정되어 있다면
+            clear(); // 화면을 지우고
+            printf("%d %d \n", prev_y, prev_x); // 현재 좌표를 출력한 뒤
+            show_ladder(board, n_people, height); // 색칠된 사다리를 출력한다. 
+            if (prev_y) getchar(); // 사다리의 맨 위에 도달하지 않았다면, 사용자가 엔터를 누를 때까지 기다린다. 
         }
     }
 
-    return x / 2 + 1;
+    return x / 2 + 1; // 도착한 위치를 반환한다. 
 }
 
 void iterate_navigate(int **board, int n_people, int height) {
-    clear();
-    show_ladder(board, n_people, height);
+    clear(); // 화면을 지운다. 
+    show_ladder(board, n_people, height); // 사다리를 타기 전 사다리를 출력한다. 
     
-    int flag = 1, start;
-    int *dest = (int*)calloc(n_people, sizeof(int));
+    int flag = 1, start; // 반복을 제어할 flag와 시작점을 저장할 변수를 선언한다. 
+    int *dest = (int*)calloc(n_people, sizeof(int)); // 각 시작점에서 도착점을 저장할 배열을 동적할당한다. 
     while (flag) {
-        printf(">> "); scanf("%d", &start);
-        flush();
+        printf(">> "); scanf("%d", &start); // 사용자에게 시작점 혹은 다른 신호를 입력받는다.
+        flush(); // stdin 입력 버퍼를 비운다. 
         switch (start) {
-            case 0: 
-                flag = 0;
+            case 0: // 사용자가 0을 선택한 경우
+                flag = 0; // flag를 0으로 설정하여 반복을 종료한다. 
                 break;
-            case -1: 
-                clear();
-                for (int i = 0; i < n_people; i++) dest[i] = navigate(board, n_people, height, i + 1, 0);
-                show_ladder(board, n_people, height);
+            case -1: // 사용자가 -1을 선택한 경우
+                clear(); // 화면을 지운다. 
+                for (int i = 0; i < n_people; i++) dest[i] = navigate(board, n_people, height, i + 1, 0); // 각 시작점에서 사다리를 타 도착점을 계산한다. 이 과정은 출력하지 않는다. 
+                show_ladder(board, n_people, height); // 사다리를 탄 결과 (색칠된 사다리)를 출력한다. 
                 printf("\n");
-                for (int i = 0; i < n_people; i++) printf("%d -> %c \n", i + 1, 'A' + dest[i] - 1);
+                for (int i = 0; i < n_people; i++) printf("%d -> %c \n", i + 1, 'A' + dest[i] - 1); // 각 시작점에서 도착점을 출력한다. 
                 printf("\n");
                 break;
             default: 
-                dest[start - 1] = navigate(board, n_people, height, start, 1);
+                dest[start - 1] = navigate(board, n_people, height, start, 1); // 사용자가 입력한 시작점에서 사다리를 타 도착점을 계산한다. 이 과정은 출력한다. 
                 printf("\n");
-                printf("result: %d -> %c \n", start, 'A' + dest[start - 1] - 1);
+                printf("result: %d -> %c \n", start, 'A' + dest[start - 1] - 1); // 시작점과 도착점을 출력한다. 
                 printf("\n");
                 break;
         }
     }
-    free(dest);
+    free(dest); // 목적지를 저장하기 위해 동적할당한 배열을 해제한다. 
 }
