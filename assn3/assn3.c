@@ -178,7 +178,7 @@ int main(void) {
                 if (ladder_board) { // 사다리 정보를 불러오는데 성공한 경우
                     iterate_navigate(ladder_board, n_people, height); // 사용자와 상호작용하며 사다리 타기를 진행한다. 
                     free_ladder(ladder_board, height); // 사다리를 저장하기 위해 동적할당한 메모리 공간을 해제한다. 
-                } else printf("파일이 존재하지 않습니다. "); // 사다리 정보를 불러오는데 실패한 경우 (파일이 존재하지 않는 경우)
+                } else printf("파일이 존재하지 않습니다. \n"); // 사다리 정보를 불러오는데 실패한 경우 (파일이 존재하지 않는 경우)
                 break;
             case 3: // 사용자가 < 3. 종료 >를 선택한 경우
                 flag = 0; // 반복을 종료하기 위해 flag를 0으로 설정한다. 
