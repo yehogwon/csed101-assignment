@@ -222,6 +222,7 @@ int** allocate_ladder(int n_people, int height) {
     return board; // 할당된 공간의 포인터를 반환한다. 
 }
 
+// FIXME: It doesn't work for three players
 int check_adjacent(int *board_row, int n_people, int x) {
     if (n_people == 2) return 0; // 플레이어가 두 명이면 이웃하는 경우는 고려하지 않는다. 
     else return (x - 2 >= 0 && board_row[x - 2]) || (x + 2 <= (n_people - 1) * 2 && board_row[x + 2]); // 왼쪽 끝이 아닐때는 왼쪽을 확인, 오른쪽 끝이 아닐때는 오른쪽을 확인한다. 
