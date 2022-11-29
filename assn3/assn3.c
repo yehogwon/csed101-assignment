@@ -244,20 +244,18 @@ void free_ladder(int **board, int height) {
     free(board); // 포인터 배열에 대해 할당된 메모리를 해제한다. 
 }
 
-// FIXME: Update the format of x-coord
 void save_ladder(char *filename, int **board, int n_people, int height, int n_line) {
     FILE *fp = fopen(filename, "w"); // 파일을 쓰기 모드로 열고, 파일 포인터를 얻는다. 
     fprintf(fp, "%d %d %d\n", n_people, height, n_line); // 첫 줄에 플레이어 수, 사다리 높이, 가로 선의 개수를 저장한다.
     // 배열의 모든 가로 선 후보 위치 (모든 행, 홀수 열)에 대해 반복한다. 
     for (int i = 0; i < height; i++) {
         for (int j = 1; j < n_people * 2; j += 2) {
-            if (board[i][j]) fprintf(fp, "%d %d\n", i, (j - 1) / 2); // 가로 선이 있다면 현재 위치를 파일에 저장한다. 
+            if (board[i][j]) fprintf(fp, "%d %d\n", i, (j - 1) / 2 + 1); // 가로 선이 있다면 현재 위치를 파일에 저장한다. 
         }
     }
     fclose(fp); // 파일 포인터를 닫는다. 
 }
 
-// FIXME: Update the format of x-coord
 int** load_ladder(char *filename, int *n_people, int *height, int *n_line) {
     FILE *fp = fopen(filename, "r"); // 파일을 읽기 모드로 열고, 파일 포인터를 얻는다. 
     if (fp == NULL) return NULL; // 파일이 존재하지 않으면 FILE DOES NOT EXIST의 신호로 NULL을 반환한다. 
@@ -269,13 +267,14 @@ int** load_ladder(char *filename, int *n_people, int *height, int *n_line) {
     for (int i = 0; i < *n_line; i++) { // 저장되어 있는 가로 선의 개수만큼 반복한다. 
         int x, y;
         fscanf(fp, "%d %d", &y, &x); // 가로 선의 위치를 읽는다. 
-        board[y][x * 2 + 1] = 1; // 가로 선이 그어진 곳에 1을 표시한다. 
+        board[y][(x - 1) * 2 + 1] = 1; // 가로 선이 그어진 곳에 1을 표시한다. 
     }
     
     fclose(fp); // 파일 포인터를 닫는다. 
     return board; // 사다리가 저장된 공간의 포인터를 반환한다. 
 }
 
+// TODO: Check if it's needed to print the last line
 void show_ladder(int **board, int n_people, int height) {
     // 목적지를 가로로 출력한다. 
     for (int i = 0; i < n_people; i++) printf("%3c ", 'A' + i);
