@@ -296,7 +296,6 @@ void show_ladder(int **board, int n_people, int height) {
     printf("\n");
 }
 
-// Print the coord
 int navigate(int **board, int n_people, int height, int start, int wait) {
     int mark = -start, x = (start - 1) * 2, y = height - 1; // trace를 저장할 값 mark와 현재 좌표 x, y를 선언한다. 
     int vel = 0, prev_x = x, prev_y = y; // 현재 가로로 움직이는 속도 (vel)와 이전 위치 (prev_x, prev_y)를 선언 및 초기화한다. 
