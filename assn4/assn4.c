@@ -4,6 +4,8 @@
 #include "functions.h"
 
 Node* load_playlist(char *filename);
+void save_playlist(char *filename, Node* head);
+void free_playlist(Node* head);
 
 int main(void) {
     char filename[35];
@@ -30,6 +32,11 @@ int main(void) {
         } else if (strcmp(command, "delete") == 0) {
 
         } else if (strcmp(command, "exit") == 0) {
+            printf("저장할 파일명을 입력해주세요. >> ");
+            scanf("%s", filename);
+            save_playlist(filename, head);
+            free_playlist(head);
+            printf("프로그램을 종료합니다. \n");
             break;
         } else {
             printf("유효하지 않은 명령어입니다. \n");
@@ -65,4 +72,25 @@ Node* load_playlist(char *filename) {
     }
     fclose(fp);
     return head;
+}
+
+void save_playlist(char *filename, Node* head) {
+    FILE *fp = fopen(filename, "w");
+    if (fp == NULL) return;
+
+    Node *cursor = head->next;
+    while (cursor != NULL) {
+        fprintf(fp, "%s\t%s\t%.6f\t%.6f\n", cursor->data.title, cursor->data.artist, cursor->data.size, cursor->data.pref);
+        cursor = cursor->next;
+    }
+    fclose(fp);
+}
+
+void free_playlist(Node* head) {
+    Node *cursor = head;
+    while (cursor != NULL) {
+        Node *temp = cursor;
+        cursor = cursor->next;
+        free(temp);
+    }
 }
