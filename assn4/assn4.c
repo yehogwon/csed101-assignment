@@ -34,6 +34,7 @@ int main(void) {
         } else if (strcmp(command, "delete") == 0) {
 
         } else if (strcmp(command, "exit") == 0) {
+            // TODO: Move this menu to functions.c
             printf("저장할 파일명을 입력해주세요. >> ");
             scanf("%s", filename);
             save_playlist(filename, head);
