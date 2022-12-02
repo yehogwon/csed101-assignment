@@ -14,8 +14,27 @@ int main(void) {
         if ((head = load_playlist(filename)) != NULL) break;
         printf("유효하지 않은 파일입니다. ");
     }
+    
+    char command[20];
+    while (1) {
+        printf("\n");
+        printf("명령어를 입력해주세요. >> ");
+        scanf("%s", command);
 
-    show_fn(head);
+        if (strcmp(command, "show") == 0) {
+            show_fn(head);
+        } else if (strcmp(command, "show_favorites") == 0) {
+            
+        } else if (strcmp(command, "add") == 0) {
+
+        } else if (strcmp(command, "delete") == 0) {
+
+        } else if (strcmp(command, "exit") == 0) {
+
+        } else {
+            printf("유효하지 않은 명령어입니다. \n");
+        }
+    }
 
     return 0;
 }
