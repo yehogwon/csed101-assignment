@@ -14,9 +14,9 @@ typedef struct Node {
 } Node;
 
 void show_fn(Node *head);
-void show_favorites_fn(Node *head, int n);
+int show_favorites_fn(Node *head, int n);
 void add_fn(Node *head, Music *data);
-void delete_fn(Node *head, char *title);
+int delete_fn(Node *head, char *title);
 void exit_fn(Node *head, char *filename);
 
 #endif

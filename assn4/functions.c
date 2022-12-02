@@ -18,12 +18,12 @@ void add_fn(Node *head, Music *data) {
     new_node->next = cursor;
 }
 
-void show_favorites_fn(Node *head, int n) {
-    
+int show_favorites_fn(Node *head, int n) {
+    return 0;
 }
 
 // TODO: Simplify the print method
-void delete_fn(Node *head, char *title) {
+int delete_fn(Node *head, char *title) {
     int idx = 1;
     Node *prev = head;
     Node *cursor = head->next;
@@ -44,7 +44,8 @@ void delete_fn(Node *head, char *title) {
         printf("#%2d  |%14s      |%14s      |     %5.2fMB     |     %5.2f \n", idx, cursor->data.title, cursor->data.artist, cursor->data.size, cursor->data.pref);
         printf("------------------------------------------------------------------------------------ \n");
         free(cursor);
-    } else printf("플레이리스트에 해당 음악(%s)이 없습니다. \n", title);
+        return 0;
+    } else return -1;
 }
 
 void show_fn(Node *head) {

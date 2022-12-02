@@ -4,7 +4,7 @@
 #include "functions.h"
 
 Node* load_playlist(char *filename);
-void add_music(Node *head);
+int add_music(Node *head);
 
 int main(void) {
     char filename[35];
@@ -27,13 +27,13 @@ int main(void) {
         } else if (strcmp(command, "show_favorites") == 0) {
             int n;
             printf("상위 몇 개의 음악을 추출할까요? >> "); scanf("%d", &n);
-            show_favorites_fn(head, n);
+            if (show_favorites_fn(head, n) == -1) printf("추출하고자 하는 음악의 수가 전체 음악의 수보다 많습니다. \n");
         } else if (strcmp(command, "add") == 0) {
-            add_music(head);
+            if (add_music(head) == -1) printf("해당 음악이 이미 플레이리스트 내에 존재합니다. \n");
         } else if (strcmp(command, "delete") == 0) {
             char title[15];
             printf("삭제할 음악의 타이틀을 입력해주세요. >> "); scanf("%s", title);
-            delete_fn(head, title);
+            if (delete_fn(head, title) == -1) printf("플레이리스트에 해당 음악(%s)이 없습니다. \n", title);
         } else if (strcmp(command, "exit") == 0) {
             printf("저장할 파일명을 입력해주세요. >> ");
             scanf("%s", filename);
@@ -75,7 +75,7 @@ Node* load_playlist(char *filename) {
     return head;
 }
 
-void add_music(Node *head) {
+int add_music(Node *head) {
     Music music;
     printf("추가할 음악의 타이틀을 입력해주세요. >> "); scanf("%s", music.title);
     printf("추가할 음악의 아티스트를 입력해주세요. >> "); scanf("%s", music.artist);
@@ -84,11 +84,9 @@ void add_music(Node *head) {
     
     Node *cursor = head;
     while (cursor != NULL) {
-        if (strcmp(cursor->data.title, music.title) == 0) {
-            printf("해당 음악이 이미 플레이리스트 내에 존재합니다. \n");
-            return;
-        }
+        if (strcmp(cursor->data.title, music.title) == 0) return -1;
         cursor = cursor->next;
     }
     add_fn(head, &music);
+    return 0;
 }
