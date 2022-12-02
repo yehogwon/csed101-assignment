@@ -38,7 +38,6 @@ void delete_fn(Node *head, char *title) {
     }
 
     if (cursor) {
-        printf("                                      PLAYLIST                                       \n");
         printf("==================================================================================== \n");
         printf(" No.         Title                  Artist            Volume          Preference     \n");
         printf("------------------------------------------------------------------------------------ \n");
