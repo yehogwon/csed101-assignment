@@ -6,7 +6,7 @@
 Node* load_playlist(char *filename);
 
 int main(void) {
-    char filename[100];
+    char filename[35];
     Node *head = NULL;
     while (1) {
         printf("음악 리스트 파일 이름을 입력해주세요. >> ");
@@ -14,7 +14,7 @@ int main(void) {
         if ((head = load_playlist(filename)) != NULL) break;
         printf("유효하지 않은 파일입니다. ");
     }
-    
+
     char command[20];
     while (1) {
         printf("\n");
@@ -24,13 +24,13 @@ int main(void) {
         if (strcmp(command, "show") == 0) {
             show_fn(head);
         } else if (strcmp(command, "show_favorites") == 0) {
-            
+
         } else if (strcmp(command, "add") == 0) {
 
         } else if (strcmp(command, "delete") == 0) {
 
         } else if (strcmp(command, "exit") == 0) {
-
+            break;
         } else {
             printf("유효하지 않은 명령어입니다. \n");
         }
