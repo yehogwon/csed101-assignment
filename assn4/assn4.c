@@ -32,7 +32,6 @@ int main(void) {
             printf("삭제할 음악의 타이틀을 입력해주세요. >> "); scanf("%s", title);
             delete_fn(head, title);
         } else if (strcmp(command, "exit") == 0) {
-            // TODO: Move this menu to functions.c
             printf("저장할 파일명을 입력해주세요. >> ");
             scanf("%s", filename);
             exit_fn(head, filename);
