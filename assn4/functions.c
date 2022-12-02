@@ -18,6 +18,10 @@ void add_fn(Node *head, Music *data) {
     new_node->next = cursor;
 }
 
+void show_favorites_fn(Node *head, int n) {
+    
+}
+
 // TODO: Simplify the print method
 void delete_fn(Node *head, char *title) {
     int idx = 1;

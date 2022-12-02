@@ -25,6 +25,9 @@ int main(void) {
         if (strcmp(command, "show") == 0) {
             show_fn(head);
         } else if (strcmp(command, "show_favorites") == 0) {
+            int n;
+            printf("상위 몇 개의 음악을 추출할까요? >> "); scanf("%d", &n);
+            show_favorites_fn(head, n);
         } else if (strcmp(command, "add") == 0) {
             add_music(head);
         } else if (strcmp(command, "delete") == 0) {

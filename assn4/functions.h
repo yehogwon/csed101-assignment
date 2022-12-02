@@ -13,10 +13,10 @@ typedef struct Node {
     struct Node *next;
 } Node;
 
+void show_fn(Node *head);
+void show_favorites_fn(Node *head, int n);
 void add_fn(Node *head, Music *data);
 void delete_fn(Node *head, char *title);
-void show_fn(Node *head);
-void show_favorites_fn();
 void exit_fn(Node *head, char *filename);
 
 #endif
