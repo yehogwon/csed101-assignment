@@ -27,12 +27,12 @@ void show_fn(Node *head) {
     printf("==================================================================================== \n");
     printf(" No.         Title                  Artist            Volume          Preference     \n");
     printf("------------------------------------------------------------------------------------ \n");
+    if (cursor == NULL) printf("Empty Playlist! \n");
     while (cursor != NULL) {
         printf("#%2d  |%14s      |%14s      |     %5.2fMB     |     %5.2f \n", ++count, cursor->data.title, cursor->data.artist, cursor->data.size, cursor->data.pref);
         storage += cursor->data.size;
         cursor = cursor->next;
     }
-    if (cursor == NULL) printf("Empty Playlist! \n");
     printf("------------------------------------------------------------------------------------ \n");
     printf("Total number of songs: %d \n", count);
     printf("Storage: %.2f MB \n", storage);
