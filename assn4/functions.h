@@ -1,3 +1,6 @@
+#ifndef FUNCTIONS_H
+#define FUNCTIONS_H
+
 typedef struct {
     char title[15];
     char artist[15];
@@ -15,3 +18,5 @@ void delete_fn();
 void show_fn(Node *head);
 void show_favorites_fn();
 void exit_fn();
+
+#endif
