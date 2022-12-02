@@ -10,8 +10,8 @@ typedef struct Node {
     struct Node *next;
 } Node;
 
-void add_fn();
+void add_fn(Node *head, Music *data);
 void delete_fn();
-void show_fn();
+void show_fn(Node *head);
 void show_favorites_fn();
 void exit_fn();

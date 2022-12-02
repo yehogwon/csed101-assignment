@@ -1,6 +1,6 @@
-// NOTE: DO NOT USE ANY OF THE FUNCTIONS IN THE STRING.H LIBRARY
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "functions.h"
 
 Node* load_playlist(char *filename);
@@ -15,6 +15,8 @@ int main(void) {
         printf("유효하지 않은 파일입니다. ");
     }
 
+    show_fn(head);
+
     return 0;
 }
 
@@ -28,13 +30,19 @@ Node* load_playlist(char *filename) {
     Node *cursor = head;
     Node *new_node = NULL;
     while (1) {
-        new_node = (Node*)malloc(sizeof(Node));
-        if (fscanf(fp, "%s %s %f %f", new_node->data.title, new_node->data.artist, &new_node->data.size, &new_node->data.pref) == EOF) {
+        Music music;
+        if (fscanf(fp, "%s %s %f %f", music.title, music.artist, &music.size, &music.pref) == EOF) {
             free(new_node);
             break;
         }
-        cursor->next = new_node;
-        cursor = new_node;
+
+        if (music.size > 50) {
+            printf("용량 초과! 음악(%s)은 추가되지 않았습니다. \n", new_node->data.title);
+            free(new_node);
+            continue;
+        }
+
+        add_fn(head, &music);
     }
     fclose(fp);
     return head;
