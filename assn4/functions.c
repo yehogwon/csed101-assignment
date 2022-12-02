@@ -64,3 +64,24 @@ void show_fn(Node *head) {
     printf("Storage: %.2f MB \n", storage);
     printf("==================================================================================== \n");
 }
+
+void exit_fn(Node *head, char *filename) {
+    FILE *fp = fopen(filename, "w");
+    if (fp == NULL) return;
+
+    Node *cursor = head->next;
+    while (cursor != NULL) {
+        fprintf(fp, "%s\t%s\t%.6f\t%.6f\n", cursor->data.title, cursor->data.artist, cursor->data.size, cursor->data.pref);
+        cursor = cursor->next;
+    }
+    fclose(fp);
+
+    cursor = head;
+    while (cursor != NULL) {
+        Node *temp = cursor;
+        cursor = cursor->next;
+        free(temp);
+    }
+    
+    printf("프로그램을 종료합니다. \n");
+}
