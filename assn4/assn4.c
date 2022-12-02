@@ -7,6 +7,8 @@ Node* load_playlist(char *filename);
 void save_playlist(char *filename, Node* head);
 void free_playlist(Node* head);
 
+void add_music(Node *head);
+
 int main(void) {
     char filename[35];
     Node *head = NULL;
@@ -26,9 +28,9 @@ int main(void) {
         if (strcmp(command, "show") == 0) {
             show_fn(head);
         } else if (strcmp(command, "show_favorites") == 0) {
-
+            
         } else if (strcmp(command, "add") == 0) {
-
+            add_music(head);
         } else if (strcmp(command, "delete") == 0) {
 
         } else if (strcmp(command, "exit") == 0) {
@@ -93,4 +95,13 @@ void free_playlist(Node* head) {
         cursor = cursor->next;
         free(temp);
     }
+}
+
+void add_music(Node *head) {
+    Music *music = (Music*) malloc(sizeof(Music));
+    printf("추가할 음악의 타이틀을 입력해주세요. >> "); scanf("%s", music->title);
+    printf("추가할 음악의 아티스트를 입력해주세요. >> "); scanf("%s", music->artist);
+    printf("추가할 음악의 용량을 입력해주세요. >> "); scanf("%f", &music->size);
+    printf("추가할 음악의 선호도를 입력해주세요. >> "); scanf("%f", &music->pref);
+    add_fn(head, music);
 }
