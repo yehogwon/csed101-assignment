@@ -28,11 +28,12 @@ int main(void) {
         if (strcmp(command, "show") == 0) {
             show_fn(head);
         } else if (strcmp(command, "show_favorites") == 0) {
-
         } else if (strcmp(command, "add") == 0) {
             add_music(head);
         } else if (strcmp(command, "delete") == 0) {
-
+            char title[15];
+            printf("삭제할 음악의 타이틀을 입력해주세요. >> "); scanf("%s", title);
+            delete_fn(head, title);
         } else if (strcmp(command, "exit") == 0) {
             // TODO: Move this menu to functions.c
             printf("저장할 파일명을 입력해주세요. >> ");
