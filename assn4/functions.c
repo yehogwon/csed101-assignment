@@ -3,14 +3,24 @@
 #include <string.h>
 #include "functions.h"
 
-void add_fn(Node *head, Music *data) {
+int crit_title(Music *a, Music *b)
+{
+    return strcmp(a->title, b->title);
+}
+
+int crit_pref(Music *a, Music *b)
+{
+    return -(a->pref - b->pref);
+}
+
+void add_fn(Node *head, Music *data, int (*criterion)(Music *, Music *)) {
     Node *new_node = (Node*) malloc(sizeof(Node));
     new_node->data = *data;
 
     Node *prev = head;
     Node *cursor = head->next;
     while (cursor != NULL) {
-        if (strcmp(new_node->data.title, cursor->data.title) < 0) break;
+        if (criterion(&new_node->data, &cursor->data) < 0) break;
         prev = cursor;
         cursor = cursor->next;
     }
@@ -18,7 +28,29 @@ void add_fn(Node *head, Music *data) {
     new_node->next = cursor;
 }
 
+// FIXME: It doesn't work for a music called `ANTIFRAGILE`
 int show_favorites_fn(Node *head, int n) {
+    Node *favo_head = (Node*) malloc(sizeof(Node)), *favo_cursor = favo_head;
+    favo_head->next = NULL;
+
+    // TODO: Enhance the space efficiency
+    Node *cursor = head->next;
+    while (cursor != NULL) {
+        add_fn(favo_head, &cursor->data, crit_pref);
+        cursor = cursor->next;
+    }
+    
+    favo_cursor = favo_head;
+    while (n--) {
+        if (favo_cursor->next == NULL) return -1;
+        favo_cursor = favo_cursor->next;
+    }
+    favo_cursor->next = NULL;
+
+    show_fn(favo_head, "FAVORITES");
+
+    free(favo_head);
+
     return 0;
 }
 
@@ -41,25 +73,25 @@ int delete_fn(Node *head, char *title) {
         printf("==================================================================================== \n");
         printf(" No.         Title                  Artist            Volume          Preference     \n");
         printf("------------------------------------------------------------------------------------ \n");
-        printf("#%2d  |%14s      |%14s      |     %5.2fMB     |     %5.2f \n", idx, cursor->data.title, cursor->data.artist, cursor->data.size, cursor->data.pref);
+        printf("#-%2d  |%14s      |%14s      |     %5.2fMB     |     %5.2f \n", idx, cursor->data.title, cursor->data.artist, cursor->data.size, cursor->data.pref);
         printf("------------------------------------------------------------------------------------ \n");
         free(cursor);
         return 0;
     } else return -1;
 }
 
-void show_fn(Node *head) {
+void show_fn(Node *head, char *header) {
     int count = 0;
     float storage = 0;
     Node *cursor = head->next;
     
-    printf("                                      PLAYLIST                                       \n");
+    printf("                                      %9s                                      \n", header);
     printf("==================================================================================== \n");
     printf(" No.         Title                  Artist            Volume          Preference     \n");
     printf("------------------------------------------------------------------------------------ \n");
     if (cursor == NULL) printf("Empty Playlist! \n");
     while (cursor != NULL) {
-        printf("#%2d  |%14s      |%14s      |     %5.2fMB     |     %5.2f \n", ++count, cursor->data.title, cursor->data.artist, cursor->data.size, cursor->data.pref);
+        printf("#%-2d  |%14s      |%14s      |     %5.2fMB     |     %5.2f \n", ++count, cursor->data.title, cursor->data.artist, cursor->data.size, cursor->data.pref);
         storage += cursor->data.size;
         cursor = cursor->next;
     }

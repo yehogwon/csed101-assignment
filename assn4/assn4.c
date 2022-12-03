@@ -23,7 +23,7 @@ int main(void) {
         scanf("%s", command);
 
         if (strcmp(command, "show") == 0) {
-            show_fn(head);
+            show_fn(head, "PLAYLIST");
         } else if (strcmp(command, "show_favorites") == 0) {
             int n;
             printf("상위 몇 개의 음악을 추출할까요? >> "); scanf("%d", &n);
@@ -69,7 +69,7 @@ Node* load_playlist(char *filename) {
             continue;
         }
 
-        add_fn(head, &music);
+        add_fn(head, &music, crit_title);
     }
     fclose(fp);
     return head;
@@ -87,6 +87,6 @@ int add_music(Node *head) {
         if (strcmp(cursor->data.title, music.title) == 0) return -1;
         cursor = cursor->next;
     }
-    add_fn(head, &music);
+    add_fn(head, &music, crit_title);
     return 0;
 }
