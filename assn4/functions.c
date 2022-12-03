@@ -3,17 +3,17 @@
 #include <string.h>
 #include "functions.h"
 
-int crit_title(Music *a, Music *b)
+float crit_title(Music *a, Music *b)
 {
     return strcmp(a->title, b->title);
 }
 
-int crit_pref(Music *a, Music *b)
+float crit_pref(Music *a, Music *b)
 {
     return -(a->pref - b->pref);
 }
 
-void add_fn(Node *head, Music *data, int (*criterion)(Music *, Music *)) {
+void add_fn(Node *head, Music *data, float (*criterion)(Music *, Music *)) {
     Node *new_node = (Node*) malloc(sizeof(Node));
     new_node->data = *data;
 
@@ -28,7 +28,6 @@ void add_fn(Node *head, Music *data, int (*criterion)(Music *, Music *)) {
     new_node->next = cursor;
 }
 
-// FIXME: It doesn't work for a music called `ANTIFRAGILE`
 int show_favorites_fn(Node *head, int n) {
     Node *favo_head = (Node*) malloc(sizeof(Node)), *favo_cursor = favo_head;
     favo_head->next = NULL;

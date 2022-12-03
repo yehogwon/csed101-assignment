@@ -13,12 +13,12 @@ typedef struct Node {
     struct Node *next;
 } Node;
 
-int crit_title(Music *a, Music *b);
-int crit_pref(Music *a, Music *b);
+float crit_title(Music *a, Music *b);
+float crit_pref(Music *a, Music *b);
 
 void show_fn(Node *head, char *header);
 int show_favorites_fn(Node *head, int n);
-void add_fn(Node *head, Music *data, int (*criterion)(Music *, Music *));
+void add_fn(Node *head, Music *data, float (*criterion)(Music *, Music *));
 int delete_fn(Node *head, char *title);
 void exit_fn(Node *head, char *filename);
 
