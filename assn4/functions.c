@@ -1,3 +1,16 @@
+/**
+ * File: functions.c
+ * Author: 20220358 권예호 (Yeho Gwon)
+ * Date: 2022.12.03
+ * OS: macOS 13.0.1
+ * IDE Environment: Visual Studio Code 1.73.1
+ * GCC version: gcc 14.0.0
+ * C standard: C99
+ * Encoding: UTF-8
+ * End of Line Sequence: LF
+ * Naming Convention: snake_case
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,7 +66,6 @@ int show_favorites_fn(Node *head, int n) {
     return 0;
 }
 
-// TODO: Simplify the print method
 int delete_fn(Node *head, char *title) {
     int idx = 1;
     Node *prev = head;
