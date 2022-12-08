@@ -46,6 +46,13 @@ float crit_title(Music *a, Music *b);
 float crit_pref(Music *a, Music *b);
 
 /**
+ * 주어진 linkedlist를 해제하는 함수
+ * 매개변수 head: playlist의 head dummy node
+ * 리턴값: 없음
+*/
+void free_list(Node *head);
+
+/**
  * playlist의 head dummy node가 주어졌을 때, playlist를 출력하는 함수
  * 매개변수 head: playlist의 head dummy node
  * 매개변수 header: 출력할 때 표시할 제목 문자열
