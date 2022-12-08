@@ -31,7 +31,6 @@ void free_list(Node *head) {
         cursor = cursor->next; // 현재 노드 삭제
         free(temp); // 삭제된 노드 할당 해제
     }
-    free(head); // head dummy node 해제
 }
 
 void add_fn(Node *head, Music *data, float (*criterion)(Music *, Music *)) {
@@ -73,10 +72,9 @@ int show_favorites_fn(Node *head, int n) {
 
     free_list(favo_head); // favo linkedlist의 메모리를 해제한다. 
 
-    return 0;
+    return 0; // 성공적으로 수행했으므로 0을 반환
 }
 
-// FIRE: Free the memory
 int delete_fn(Node *head, char *title) {
     int idx = 1; // 삭제할 노드의 인덱스를 저장하기 위한 변수
     Node *prev = head; // 삭제할 노드의 이전 노드
@@ -84,21 +82,24 @@ int delete_fn(Node *head, char *title) {
     while (cursor != NULL) { // 맨 끝에 도달할 때까지 반복
         if (strcmp(cursor->data.title, title) == 0) { // 삭제할 노드를 찾았다면 반복문을 빠져나옴
             prev->next = cursor->next; // 삭제할 노드를 연결리스트에서 제거
-            break;
+            break; // 반복문을 빠져나옴
         }
+        // 다음 노드로 이동
         prev = cursor;
         cursor = cursor->next;
-        idx++;
+        idx++; // 인덱스를 1 증가
     }
 
     if (cursor) {
+        // 삭제한 음악의 정보를 출력
         printf("==================================================================================== \n");
         printf(" No.         Title                  Artist            Volume          Preference     \n");
         printf("------------------------------------------------------------------------------------ \n");
         printf("#-%2d  |%14s      |%14s      |     %5.2fMB     |     %5.2f \n", idx, cursor->data.title, cursor->data.artist, cursor->data.size, cursor->data.pref);
         printf("------------------------------------------------------------------------------------ \n");
-        return 0;
-    } else return -1;
+        free(cursor); // 삭제한 노드의 메모리를 해제
+        return 0; // 성공적으로 삭제했으므로 0을 반환
+    } else return -1; // 삭제할 노드를 찾지 못했으므로 -1을 반환
 }
 
 void show_fn(Node *head, char *header) {
