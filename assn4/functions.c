@@ -54,7 +54,6 @@ int show_favorites_fn(Node *head, int n) {
     Node *favo_head = (Node*) malloc(sizeof(Node)), *favo_cursor = favo_head; // 즐겨찾기를 저장할 연결리스트의 헤드 노드 (기존 playlist를 복사한다)
     favo_head->next = NULL; // 즐겨찾기를 저장할 연결리스트의 헤드 노드의 다음 노드를 NULL로 초기화
 
-    // TODO: Enhance the space efficiency
     Node *cursor = head->next; // 기존 playlist의 노드를 순회하기 위한 포인터
     while (cursor != NULL) { // 맨 끝에 도달할 때까지 반복
         add_fn(favo_head, &cursor->data, crit_pref); // 기존 playlist의 노드를 favo linkedlist에 추가 ; preference를 기준으로 정렬한다. 
