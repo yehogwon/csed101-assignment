@@ -89,6 +89,7 @@ Node* load_playlist(char *filename) {
         // 파일에서 음악 정보를 입력받는다. 이때, 파일의 끝에 도달했다면 반복문을 멈춘다.
         if (fscanf(fp, "%s %s %f %f", music.title, music.artist, &music.size, &music.pref) == EOF) break;
 
+        // FIRE: the condition of this should be checked!
         if (music.size > 50) { // 음악의 용량이 초과된 경우
             printf("용량 초과! 음악(%s)은 추가되지 않았습니다. \n", music.title); // 사용자에게 용량 초과임을 알려준다. 
             continue;
