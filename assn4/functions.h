@@ -36,7 +36,6 @@ typedef struct Node {
 */
 float crit_title(Music *a, Music *b);
 
-
 /**
  * 두 개의 Music structure pointer가 주어졌을 때, 두 음악의 preference를 비교하여 정렬에 사용하는 함수
  * 매개변수 a: Music structure pointer
@@ -44,6 +43,13 @@ float crit_title(Music *a, Music *b);
  * 리턴값: a가 b 뒤에 오는 것이 맞아면 양수, 그렇지 않다면 음수를 반환
 */
 float crit_pref(Music *a, Music *b);
+
+/**
+ * playlist의 전체 용량을 반환하는 함수
+ * 매개변수 head: playlist의 head dummy node
+ * 리턴값: playlist의 전체 용량
+*/
+float get_total_size(Node *head);
 
 /**
  * 주어진 linkedlist를 해제하는 함수

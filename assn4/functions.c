@@ -24,6 +24,16 @@ float crit_pref(Music *a, Music *b) {
     return -(a->pref - b->pref); // 두 음악의 preference를 비교
 }
 
+float get_total_size(Node *head) {
+    float total_size = 0; // 전체 크기를 저장할 변수
+    Node *cursor = head->next; // 노드를 순회하기 위한 포인터
+    while (cursor != NULL) { // 맨 끝에 도달할 때까지 반복
+        total_size += cursor->data.size; // 전체 크기에 현재 노드의 크기를 더함
+        cursor = cursor->next; // 다음 노드로 이동
+    }
+    return total_size;
+}
+
 void free_list(Node *head) {
     Node *cursor = head; // 첫 번째 노드를 가리키는 포인터
     while (cursor != NULL) { // 맨 끝에 도달할 때까지 반복
@@ -103,7 +113,6 @@ int delete_fn(Node *head, char *title) {
 
 void show_fn(Node *head, char *header) {
     int count = 0; // 음악의 개수를 세기 위한 변수
-    float storage = 0; // 음악의 총 용량을 저장하기 위한 변수
     Node *cursor = head->next; // 현재 node를 가리키는 cursor
     
     // header 출력
@@ -115,12 +124,11 @@ void show_fn(Node *head, char *header) {
     while (cursor != NULL) { // 노드가 없을 때까지 반복
         // 현재 음악의 정보를 출력
         printf("#%-2d  |%14s      |%14s      |     %5.2fMB     |     %5.2f \n", ++count, cursor->data.title, cursor->data.artist, cursor->data.size, cursor->data.pref);
-        storage += cursor->data.size; // 현재 음악의 용량을 총 용량에 더한다.
         cursor = cursor->next; // 다음 노드로 이동
     }
     printf("------------------------------------------------------------------------------------ \n");
     printf("Total number of songs: %d \n", count); // 총 음악의 개수를 출력
-    printf("Storage: %.2f MB \n", storage); // 총 용량을 출력
+    printf("Storage: %.2f MB \n", get_total_size(head)); // 총 용량을 출력
     printf("==================================================================================== \n");
 }
 

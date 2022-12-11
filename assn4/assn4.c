@@ -27,7 +27,7 @@ Node* load_playlist(char *filename);
 /**
  * playlist linkedlist의 head dummy node가 주어졌을 때, 사용자에게 음악 정보를 입력받아 playlist에 추가하는 함수
  * 매개변수 head: playlist linkedlist의 head dummy node
- * 리턴값: 성공적으로 추가되었을 경우 0, 그렇지 않을 경우 -1
+ * 리턴값: 성공적으로 추가되었거나 용량 초과인 경우 0, 그렇지 않을 경우 -1
 */
 int add_music(Node *head);
 
@@ -89,8 +89,7 @@ Node* load_playlist(char *filename) {
         // 파일에서 음악 정보를 입력받는다. 이때, 파일의 끝에 도달했다면 반복문을 멈춘다.
         if (fscanf(fp, "%s %s %f %f", music.title, music.artist, &music.size, &music.pref) == EOF) break;
 
-        // FIRE: the condition of this should be checked!
-        if (music.size > 50) { // 음악의 용량이 초과된 경우
+        if (get_total_size(head) + music.size > 50) { // 음악의 용량이 초과된 경우
             printf("용량 초과! 음악(%s)은 추가되지 않았습니다. \n", music.title); // 사용자에게 용량 초과임을 알려준다. 
             continue;
         }
@@ -108,6 +107,11 @@ int add_music(Node *head) {
     printf("추가할 음악의 아티스트를 입력해주세요. >> "); scanf("%s", music.artist);
     printf("추가할 음악의 용량을 입력해주세요. >> "); scanf("%f", &music.size);
     printf("추가할 음악의 선호도를 입력해주세요. >> "); scanf("%f", &music.pref);
+
+    if (get_total_size(head) + music.size > 50) { // 음악의 용량이 초과된 경우
+        printf("용량 초과! 음악(%s)은 추가되지 않았습니다. \n", music.title); // 사용자에게 용량 초과임을 알려준다. 
+        return 0; // 에러 메시지가 필요하지 않다는 신호로 0을 출력한다. 
+    }
     
     // 음악의 중복 여부를 확인한다.
     Node *cursor = head; // cursor를 head dummy node로 초기화한다.
