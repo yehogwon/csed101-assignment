@@ -95,7 +95,7 @@ int delete_fn(Node *head, char *title) {
         printf("==================================================================================== \n");
         printf(" No.         Title                  Artist            Volume          Preference     \n");
         printf("------------------------------------------------------------------------------------ \n");
-        printf("#-%2d  |%14s      |%14s      |     %5.2fMB     |     %5.2f \n", idx, cursor->data.title, cursor->data.artist, cursor->data.size, cursor->data.pref);
+        printf("#%-2d  |%14s      |%14s      |     %5.2fMB     |     %5.2f \n", idx, cursor->data.title, cursor->data.artist, cursor->data.size, cursor->data.pref);
         printf("------------------------------------------------------------------------------------ \n");
         free(cursor); // 삭제한 노드의 메모리를 해제
         return 0; // 성공적으로 삭제했으므로 0을 반환
