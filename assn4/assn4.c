@@ -34,11 +34,13 @@ int add_music(Node *head);
 int main(void) {
     char filename[35]; // playlist를 불러올 파일 이름, 혹은 저장할 파일 이름
     Node *head = NULL; // playlist linkedlist의 head dummy node
+    char again_prompt[8] = " "; // "다시 "를 저장할 변수
     while (1) {
-        printf("음악 리스트 파일 이름을 입력해주세요. >> "); // playlist를 불러올 파일 이름을 입력하라는 prompt를 출력한다. 
+        printf("음악 리스트 파일 이름을%s입력해주세요. >> ", again_prompt); // playlist를 불러올 파일 이름을 입력하라는 prompt를 출력한다. 
         scanf("%s", filename); // playlist를 불러올 파일 이름을 입력받는다. 
         if ((head = load_playlist(filename)) != NULL) break; // playlist를 불러올 파일 이름을 입력받았을 때, 해당 파일이 존재하여 정상적으로 불러온 경우 반복문을 멈춘다. 
         printf("유효하지 않은 파일입니다. "); // 정상적으로 불러오지 못한 경우 유효하지 않은 파일임을 알리는 메시지를 출력하고 다시 입력받는다. 
+        strcpy(again_prompt, "다시 "); // 다시 입력받는다는 메시지를 출력하기 위해 again_prompt 변수를 "다시 "로 설정한다.
     }
 
     char command[20]; // 사용자가 입력한 명령어를 저장할 변수를 선언한다. 
